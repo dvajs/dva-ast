@@ -1,23 +1,27 @@
 export const getValue = (p) => {
-  if (p.value.type === 'ObjectExpression') {
-    return p.value.properties.reduce((prev, curr) => {
-      return {
-        ...prev,
-        [curr.key.name]: getValue(curr),
+  if (p.type === 'Property') {
+    return {
+      [p.key.name]: getValue(p.value),
+    };
+  }
+  if (p.type === 'ObjectExpression') {
+    return p.properties.reduce((obj, property) => (
+      {
+        ...obj,
+        ...getValue(property),
       }
-    }, {})
+    ), {});
   }
 
-  if (p.value.type === 'Literal') {
-    return p.value.value;
+  if (p.type === 'Literal') {
+    return p.value;
   }
 
-  if (p.value.type === 'ArrayExpression') {
-    // return p.value.elements.map(getValue);
+  if (p.type === 'ArrayExpression') {
+    return p.elements.map(getValue);
   }
-}
 
-export const parseState = (p) => {
-  console.log(getValue(p));
-  return p;
+  return null;
 };
+
+export const parseState = (p) => getValue(p);
