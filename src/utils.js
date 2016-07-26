@@ -34,3 +34,18 @@ export const parse = (p) => {
 
   return null;
 };
+
+export const parseModel = parse;
+
+export const parseConnect = (args) => {
+  // mapStateToProps
+  const mapStateToProps = args[0];
+  console.log(mapStateToProps);
+  return {};
+};
+
+export const parseContainer = (p) => {
+  return {
+    connect: parseConnect(p.callee.arguments),
+  };
+};
