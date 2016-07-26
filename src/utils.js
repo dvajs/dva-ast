@@ -1,14 +1,21 @@
-export const getValue = (p) => {
+export const parse = (p) => {
   if (p.type === 'Property') {
+    let propsName;
+    if (p.key.type === 'Identifier') {
+      propsName = p.key.name;
+    }
+    if (p.key.type === 'Literal') {
+      propsName = p.key.value;
+    }
     return {
-      [p.key.name]: getValue(p.value),
+      [propsName]: parse(p.value),
     };
   }
   if (p.type === 'ObjectExpression') {
     return p.properties.reduce((obj, property) => (
       {
         ...obj,
-        ...getValue(property),
+        ...parse(property),
       }
     ), {});
   }
@@ -18,10 +25,12 @@ export const getValue = (p) => {
   }
 
   if (p.type === 'ArrayExpression') {
-    return p.elements.map(getValue);
+    return p.elements.map(parse);
+  }
+
+  if (p.type === 'FunctionExpression') {
+    return p;
   }
 
   return null;
 };
-
-export const parseState = (p) => getValue(p);
