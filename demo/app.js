@@ -81,10 +81,17 @@ const App = connect(({products}) => ({
   );
 });
 
+const TestApp0 = connect(state)(
+  () => <div>TestApp0</div>
+);
+
 const mapStateToProps = (state) => ({
   aaaa: state.products,
 });
-const TestApp = connect(mapStateToProps, () => <div>Test</div>);
+const TestApp1 = connect(mapStateToProps)(
+  () => <div>Test</div>
+);
+
 
 // 4. Router
 app.router(({ history }) =>
