@@ -33,11 +33,11 @@ export default function transformer(file, api) {
         name: 'connect',
       },
     }).forEach(p => {
-      containers.push(parseContainer(p));
+      containers.push(parseContainer(p, j));
     });
   };
 
   const containers = findContainers(root);
-  console.log(containers);
+  // console.log(containers);
   return root.toSource();
 }

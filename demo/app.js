@@ -81,7 +81,11 @@ const App = connect(({products}) => ({
   );
 });
 
-const TestApp0 = connect(state)(
+const TestApp0 = connect((state) => {
+  return {
+    p: state.products,
+  }
+})(
   () => <div>TestApp0</div>
 );
 

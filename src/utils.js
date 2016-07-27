@@ -37,10 +37,9 @@ export const parse = (p) => {
 
 export const parseModel = parse;
 
-export const parseConnect = (args) => {
+export const parseConnect = (args, p, j) => {
   // mapStateToProps
   const mstp = args[0];
-  console.log(mstp);
   if (mstp.type === 'ArrowFunctionExpression') {
     if (mstp.params.length > 0 && mstp.params[0].type === 'ObjectPattern') {
       // todo: { products }
@@ -48,20 +47,32 @@ export const parseConnect = (args) => {
 
     // todo: state
     if (mstp.params.length > 0 && mstp.params[0].type === 'Identifier') {
-      // todo: find definedScope
+      // analyze mapStateToProps function
     }
   }
 
   if (mstp.type === 'Identifier') {
     const stateName = mstp.name;
+    const resolvedScope = p.scope.lookup(stateName);
+    if (resolvedScope) {
+      resolvedScope.getBindings()[stateName].every(
+        p => {
+          const decl = j(p).closest(j.VariableDeclarator);
+          const node = decl.nodes()[0];
 
-    // todo: find definedScope
+          // TODO or FunctionExpression
+          if (node.init.type === 'ArrowFunctionExpression') {
+            // analyze mapStateToProps function
+          }
+        }
+      )
+    }
   }
   return {};
 };
 
-export const parseContainer = (p) => {
+export const parseContainer = (p, j) => {
   return {
-    connect: parseConnect(p.node.arguments),
+    connect: parseConnect(p.node.arguments, p, j),
   };
 };
