@@ -22,7 +22,8 @@ export default function transformer(file, api) {
   };
 
   const models = findDvaModel(root);
-  // console.log(models);
+  console.log('---------- models ----------');
+  console.log(models);
 
   // find those components with connects
   const findContainers = (p) => {
@@ -35,9 +36,11 @@ export default function transformer(file, api) {
     }).forEach(p => {
       containers.push(parseContainer(p, j));
     });
+    return containers;
   };
 
   const containers = findContainers(root);
-  // console.log(containers);
+  console.log('---------- containers ----------');
+  console.log(containers);
   return root.toSource();
 }

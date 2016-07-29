@@ -90,11 +90,20 @@ const TestApp0 = connect((state) => {
 );
 
 const mapStateToProps = (state) => ({
-  aaaa: state.products,
+  products: state.products,
+  user: state.user,
 });
-const TestApp1 = connect(mapStateToProps)(
-  () => <div>Test</div>
-);
+const Component = () => <div>Test Component</div>;
+const TestApp1 = connect(mapStateToProps)(Component);
+const XComponent = connect(mapStateToProps)(() => <div>xxxx</div>);
+
+const TestApp2 = connect(function(state) {
+  return {
+    p: state.products,
+  }
+})(
+  () => <div>TestApp2</div>
+)
 
 
 // 4. Router

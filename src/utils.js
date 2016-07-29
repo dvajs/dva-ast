@@ -37,42 +37,120 @@ export const parse = (p) => {
 
 export const parseModel = parse;
 
-export const parseConnect = (args, p, j) => {
-  // mapStateToProps
-  const mstp = args[0];
-  if (mstp.type === 'ArrowFunctionExpression') {
-    if (mstp.params.length > 0 && mstp.params[0].type === 'ObjectPattern') {
-      // todo: { products }
-    }
+const isFunctionType = (type) =>
+  ['ArrowFunctionExpression', 'FunctionExpression'].indexOf(type) > -1;
 
-    // todo: state
-    if (mstp.params.length > 0 && mstp.params[0].type === 'Identifier') {
-      // analyze mapStateToProps function
-    }
-  }
+const findMapStateToPropsFunction = (connectFirstArgument = {}, p, j) => {
+  let func;
+  const { type } = connectFirstArgument;
+  if (isFunctionType(type)) func = connectFirstArgument;
 
-  if (mstp.type === 'Identifier') {
-    const stateName = mstp.name;
-    const resolvedScope = p.scope.lookup(stateName);
+  // need to find decl
+  if (type === 'Identifier') {
+    const funcName = connectFirstArgument.name;
+    const resolvedScope = p.scope.lookup(funcName);
     if (resolvedScope) {
-      resolvedScope.getBindings()[stateName].every(
-        p => {
-          const decl = j(p).closest(j.VariableDeclarator);
+      resolvedScope.getBindings()[funcName].every(
+        _p => {
+          const decl = j(_p).closest(j.VariableDeclarator);
           const node = decl.nodes()[0];
 
-          // TODO or FunctionExpression
-          if (node.init.type === 'ArrowFunctionExpression') {
-            // analyze mapStateToProps function
+          // we didn't consider situations like:
+          // connect(mapStateToProps)(...) => const mapStateToProps = m; => const m = () => {};
+          if (isFunctionType(node.init.type)) {
+            func = node.init;
           }
+          return _p;
         }
-      )
+      );
     }
   }
-  return {};
+
+  return func;
 };
 
-export const parseContainer = (p, j) => {
+const findBodyObjectExpression = (body, j) => {
+  let obj;
+  if (body.type === 'ObjectExpression') obj = body;
+
+  j(body).find(j.ReturnStatement)
+    .forEach(p => {
+      obj = p.node.argument;
+    });
+  return obj;
+};
+
+const parseStateSubscriptionProperty = (property, stateName) => {
+  let model;
+  let data;
+
+  // TODO: should consider situations: productList: state.products.list
+  if (property.value.type === 'MemberExpression') {
+    if (property.value.object.type === 'Identifier') {
+      if (property.value.property.type === 'Identifier') {
+        model = property.value.property.name;
+        data = `${stateName}.${model}`;
+      }
+    }
+  }
+
+  if (!stateName) {
+    if (property.value.type === 'Identifier') {
+      model = property.value.name;
+      data = `${model}`;
+    }
+  }
+
   return {
-    connect: parseConnect(p.node.arguments, p, j),
+    [property.key.name]: {
+      model,
+      data,
+    },
   };
 };
+
+const analyzeMapStateToProps = (func, j) => {
+  const param = func.params[0];
+  const body = func.body;
+  let stateName;
+  let models;
+
+  if (param.type === 'Identifier') {
+    stateName = param.name;
+  }
+
+  if (param.type === 'ObjectPattern') {
+    models = param.properties.map(prop => prop.value.name);
+  }
+
+  const obj = findBodyObjectExpression(body, j);
+  const data = obj.properties.reduce((val, property) => ({
+    ...val,
+    ...parseStateSubscriptionProperty(property, stateName, models),
+  }), {});
+
+  return data;
+};
+
+export const parseConnect = (args, p, j) => {
+  const mapStateToPropsFunc = findMapStateToPropsFunction(args[0], p, j);
+  const mapStateToPropsData = analyzeMapStateToProps(mapStateToPropsFunc, j);
+  return mapStateToPropsData;
+};
+
+export const parseComponent = (args, parent) => {
+  let componentName;
+  if (isFunctionType(args[0].type)) {
+    componentName = parent.parent.value.id.name;
+  } else if (args[0].type === 'Identifier') {
+    componentName = args[0].name;
+  }
+  return {
+    componentName,
+  };
+};
+
+export const parseContainer = (p, j) => ({
+  connect: parseConnect(p.node.arguments, p, j),
+  component: parseComponent(p.parent.node.arguments, p.parent, j),
+});
