@@ -6,6 +6,7 @@ export default function transformer(file, api) {
 
   const findDvaModel = (p) => {
     const models = [];
+    /*
     p.find(j.CallExpression, {
       callee: {
         type: 'MemberExpression',
@@ -18,12 +19,35 @@ export default function transformer(file, api) {
         models.push(parseModel(arg[0]));
       }
     });
+    */
+    p.find(j.ObjectExpression)
+      .forEach(obj => {
+        if (obj.value.properties) {
+          const properties = obj.value.properties.reduce((prev, curr) => {
+            if (curr.type === 'Property') {
+              return {
+                ...prev,
+                [curr.key.name]: true,
+              };
+            }
+            return prev;
+          }, {});
+
+          if (properties.namespace && properties.state) {
+            models.push(parseModel(obj.value));
+          }
+        }
+      });
     return models;
   };
 
-  const models = findDvaModel(root);
-  console.log('---------- models ----------');
-  console.log(models);
+  if (file.path.indexOf('models') > -1) {
+    const models = findDvaModel(root);
+    if (models && models.length) {
+      console.log('---------------- models ----------------');
+      console.log(models);
+    }
+  }
 
   // find those components with connects
   const findContainers = (p) => {
@@ -40,7 +64,9 @@ export default function transformer(file, api) {
   };
 
   const containers = findContainers(root);
-  console.log('---------- containers ----------');
-  console.log(containers);
+  if (containers && containers.length) {
+    console.log('---------------- containers ----------------');
+    console.log(containers);
+  }
   return root.toSource();
 }

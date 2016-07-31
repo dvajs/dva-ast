@@ -44,7 +44,6 @@ const findMapStateToPropsFunction = (connectFirstArgument = {}, p, j) => {
   let func;
   const { type } = connectFirstArgument;
   if (isFunctionType(type)) func = connectFirstArgument;
-
   // need to find decl
   if (type === 'Identifier') {
     const funcName = connectFirstArgument.name;
@@ -57,10 +56,18 @@ const findMapStateToPropsFunction = (connectFirstArgument = {}, p, j) => {
 
           // we didn't consider situations like:
           // connect(mapStateToProps)(...) => const mapStateToProps = m; => const m = () => {};
-          if (isFunctionType(node.init.type)) {
-            func = node.init;
+          if (node) {
+            if (isFunctionType(node.init.type)) {
+              func = node.init;
+            }
+          } else {
+            const funcDecl = j(_p).closest(j.FunctionDeclaration);
+            const funcNode = funcDecl.nodes()[0];
+
+            if (funcNode) {
+              func = funcNode;
+            }
           }
-          return _p;
         }
       );
     }
@@ -110,6 +117,8 @@ const parseStateSubscriptionProperty = (property, stateName) => {
 };
 
 const analyzeMapStateToProps = (func, j) => {
+  if (!func) return {};
+
   const param = func.params[0];
   const body = func.body;
   let stateName;
