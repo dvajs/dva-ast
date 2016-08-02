@@ -45,7 +45,7 @@ export default function transformer(file, api) {
   if (file.path.indexOf('models') > -1) {
     const models = findDvaModel(root);
     console.log('---------------- models ----------------');
-    models.map(m => console.log(m.data))
+    console.log(models[0].data)
   }
 
   // find those components with connects

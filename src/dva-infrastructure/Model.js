@@ -1,5 +1,7 @@
 import XNode from '../base/XNode';
 import ModelSubscription from './ModelSubscription';
+import ModelEffect from './ModelEffect';
+import ModelReducer from './ModelReducer';
 
 export default class Model extends XNode {
   constructor({ node, jscodeshift }) {
@@ -62,9 +64,42 @@ export default class Model extends XNode {
     );
   }
   parseEffects(node) {
+    if (node.type !== 'ObjectExpression') {
+      console.error('unsupported type of dva model effects');
+      return;
+    }
+    this.data.effects = node.properties.reduce((effect, curr) => {
+      let actionName;
+      if (curr.key.type === 'Literal') {
+        actionName = curr.key.value;
+      } else if (curr.key.type === 'Identifier') {
+        actionName = curr.key.name;
+      }
 
+      return {
+        ...effect,
+        [actionName]: new ModelEffect({ node: curr.value, jscodeshift: this.j })
+      }
+    }, {});
   }
   parseReducers(node) {
+    if (node.type !== 'ObjectExpression') {
+      console.error('unsupported type of dva model reducers');
+      return;
+    }
 
+    this.data.reducers = node.properties.reduce((reducer, curr) => {
+      let actionName;
+      if (curr.key.type === 'Literal') {
+        actionName = curr.key.value;
+      } else if (curr.key.type === 'Identifier') {
+        actionName = curr.key.name;
+      }
+
+      return {
+        ...reducer,
+        [actionName]: new ModelReducer({ node: curr.value, jscodeshift: this.j })
+      }
+    }, {});
   }
 }
