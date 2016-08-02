@@ -54,6 +54,7 @@ export default class XNode {
   // didn't find api of jscodeshift for finding CallExpression from node
   // tried Collection.fromNodes([node]) but didn't work
   // finally use recast api instead.
+  // maybe it would be better that we should parse the path of model here
   findActionTypeByCallee(node, calleeName, cb) {
     recast.visit(node, {
       visitCallExpression(path) {

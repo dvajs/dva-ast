@@ -1,9 +1,11 @@
 import { parseModel, parseContainer } from './utils';
-import DvaModel from './dva-infrastructure/Model';
+import DvaModel from './infrastructure/Model';
+import DvaComponent from './infrastructure/Component';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
   const root = j(file.source);
+  const ReactUtils = require('./utils/ReactUtils')(j);
 
   const findDvaModel = (p) => {
     const models = [];
@@ -44,28 +46,58 @@ export default function transformer(file, api) {
 
   if (file.path.indexOf('models') > -1) {
     const models = findDvaModel(root);
-    console.log('---------------- models ----------------');
-    console.log(models[0].data)
+    // console.log('---------------- models ----------------');
+    // console.log(models[0].data)
   }
 
-  // find those components with connects
-  const findContainers = (p) => {
-    const containers = [];
-    p.find(j.CallExpression, {
-      callee: {
-        type: 'Identifier',
-        name: 'connect',
-      },
-    }).forEach(p => {
-      containers.push(parseContainer(p, j));
+  // find components and connects
+  const components = [];
+  const componentsByCreateClass = ReactUtils.findReactCreateClass(root);
+  const componentsByES6Class = ReactUtils.findReactES6ClassDeclaration(root);
+
+
+  // TODO: there's an bug in ReactUtils which didn't find those componets like
+  /*
+  module.exports = React.createClass()
+  export default React.createClass()
+  */
+  if (componentsByCreateClass.size() > 0) {
+    componentsByCreateClass.forEach(path => {
+      components.push(new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path }));
     });
-    return containers;
-  };
-
-  const containers = findContainers(root);
-  if (containers && containers.length) {
-    console.log('---------------- containers ----------------');
-    console.log(containers);
   }
-  return root.toSource();
+
+  if (componentsByES6Class.size() > 0) {
+    componentsByES6Class.forEach(path => {
+      components.push(new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path }));
+    });
+  }
+
+  if (components.length) {
+    console.log('---------------- components ----------------');
+    components.map(c => {
+      console.log(`${c.filePath}: ${c.componentName}`)
+      console.log(c.data);
+    });
+  }
+
+  // const findContainers = (p) => {
+  //   const containers = [];
+  //   p.find(j.CallExpression, {
+  //     callee: {
+  //       type: 'Identifier',
+  //       name: 'connect',
+  //     },
+  //   }).forEach(p => {
+  //     containers.push(parseContainer(p, j));
+  //   });
+  //   return containers;
+  // };
+  //
+  // const containers = findContainers(root);
+  // if (containers && containers.length) {
+  //   console.log('---------------- containers ----------------');
+  //   console.log(containers);
+  // }
+  return null;
 }
