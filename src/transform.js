@@ -1,4 +1,5 @@
 import { parseModel, parseContainer } from './utils';
+import DvaModel from './dva-infrastructure/Model';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -34,7 +35,7 @@ export default function transformer(file, api) {
           }, {});
 
           if (properties.namespace && properties.state) {
-            models.push(parseModel(obj.value));
+            models.push(new DvaModel({ node: obj.value, jscodeshift: j }));
           }
         }
       });
@@ -43,10 +44,8 @@ export default function transformer(file, api) {
 
   if (file.path.indexOf('models') > -1) {
     const models = findDvaModel(root);
-    if (models && models.length) {
-      console.log('---------------- models ----------------');
-      console.log(models);
-    }
+    console.log('---------------- models ----------------');
+    models.map(m => console.log(m.data))
   }
 
   // find those components with connects
