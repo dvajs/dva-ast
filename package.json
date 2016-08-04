@@ -1,6 +1,6 @@
 {
   "name": "dva-ast",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "license": "ISC",
   "author": "Chris Fan <chris.fan.dev@gmail.com>",
   "main": "src/index.js",
