@@ -8,8 +8,8 @@
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
     "prepublish": "npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "transform": "jscodeshift -t src/transform.js demo/user-dashboard -d --extensions js,jsx",
-    "demo:dashboard": "./node_modules/.bin/babel-node ./demo/userDashboard.js"
+    "demo": "./node_modules/.bin/babel-node server.js",
+    "transform": "jscodeshift -t src/transform.js demo/user-dashboard -d --extensions js,jsx"
   },
   "dependencies": {
     "ast-types": "^0.8.18",
