@@ -25,9 +25,10 @@ export default class ComponentConnect extends XNode {
     }
   }
   findMapStateToPropsFunction(mapStateToProps) {
+    let func;
     const { type } = mapStateToProps;
     if (['ArrowFunctionExpression', 'FunctionExpression'].indexOf(type) > -1) {
-      return mapStateToProps;
+      func = mapStateToProps;
     } else if (type === 'Identifier') {
       const funcName = mapStateToProps.name;
       const resolvedScope = this.nodePath.scope.lookup(funcName);
@@ -41,21 +42,21 @@ export default class ComponentConnect extends XNode {
             // connect(mapStateToProps)(...) => const mapStateToProps = m; => const m = () => {};
             if (node) {
               if (['ArrowFunctionExpression', 'FunctionExpression'].indexOf(type) > -1) {
-                return node.init;
+                func = node.init;
               }
             } else {
               const funcDecl = this.j(_p).closest(this.j.FunctionDeclaration);
               const funcNode = funcDecl.nodes()[0];
 
               if (funcNode) {
-                return funcNode;
+                func = funcNode;
               }
             }
           }
         );
       }
     }
-    return null;
+    return func;
   }
   analyzeMapStateToProps(func) {
     if (!func) return {};

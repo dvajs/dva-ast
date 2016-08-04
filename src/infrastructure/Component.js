@@ -21,7 +21,10 @@ export default class Component extends XNode {
       this.componentName = node.id.name;
     } else if (node.type === 'ClassDeclaration') {
       this.componentName = node.id.name;
+    } else if (node.type === 'FunctionDeclaration') {
+      this.componentName = node.id.name;
     }
+
     this.findConnect();
     this.findDispatches();
   }

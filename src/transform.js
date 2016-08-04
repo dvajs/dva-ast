@@ -57,31 +57,37 @@ export default function transformer(file, api) {
       new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path, root })
     );
   };
-  const componentsByCreateClass = ReactUtils.findReactCreateClass(root);
-  const componentsByCreateClassExportDefault = ReactUtils.findReactCreateClassExportDefault(root);
-  const componentsByCreateClassModuleExports = ReactUtils.findReactCreateClassModuleExports(root);
-  const componentsByES6Class = ReactUtils.findReactES6ClassDeclaration(root);
+  if (ReactUtils.hasReact(root)) {
+    const componentsByCreateClass = ReactUtils.findReactCreateClass(root);
+    const componentsByCreateClassExportDefault = ReactUtils.findReactCreateClassExportDefault(root);
+    const componentsByCreateClassModuleExports = ReactUtils.findReactCreateClassModuleExports(root);
+    const componentsByES6Class = ReactUtils.findReactES6ClassDeclaration(root);
+    const componentsByPureFunction = ReactUtils.findPureReactComponents(root);
 
-  if (componentsByCreateClass.size() > 0) {
-    componentsByCreateClass.forEach(addComponent);
-  }
-  // TODO: this is not work when exprot default React.createClass
-  if (componentsByCreateClassExportDefault.size() > 0) {
-    componentsByCreateClassExportDefault.forEach(addComponent);
-  }
-  if (componentsByCreateClassModuleExports.size() > 0) {
-    componentsByCreateClassModuleExports.forEach(addComponent);
-  }
-  if (componentsByES6Class.size() > 0) {
-    componentsByES6Class.forEach(addComponent);
-  }
+    if (componentsByCreateClass.size() > 0) {
+      componentsByCreateClass.forEach(addComponent);
+    }
+    // TODO: this is not work when exprot default React.createClass
+    if (componentsByCreateClassExportDefault.size() > 0) {
+      componentsByCreateClassExportDefault.forEach(addComponent);
+    }
+    if (componentsByCreateClassModuleExports.size() > 0) {
+      componentsByCreateClassModuleExports.forEach(addComponent);
+    }
+    if (componentsByES6Class.size() > 0) {
+      componentsByES6Class.forEach(addComponent);
+    }
+    if (componentsByPureFunction.size() > 0) {
+      componentsByPureFunction.forEach(addComponent);
+    }
 
-  if (components.length) {
-    console.log('---------------- components ----------------');
-    components.map(c => {
-      console.log(`${c.filePath}: ${c.componentName}`)
-      console.log(c.connect);
-    });
+    if (components.length) {
+      console.log('---------------- components ----------------');
+      components.map(c => {
+        console.log(`${c.filePath}: ${c.componentName}`)
+        console.log(c.connect ? c.connect.data: null);
+      });
+    }
   }
   return null;
 }

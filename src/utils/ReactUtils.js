@@ -36,6 +36,11 @@ module.exports = function(j) {
     hasModule(path, 'react/addons') ||
     hasModule(path, 'react-native')
   );
+  // ---------------------------------------------------------------------------
+  // Finds pure react components
+  const findPureReactComponents = path =>
+    path.find(j.FunctionDeclaration)
+      .filter(p => j(p).find(j.JSXElement).size() > 0);
 
   // ---------------------------------------------------------------------------
   // Finds all variable declarations that call React.createClass
@@ -259,6 +264,7 @@ module.exports = function(j) {
     findReactCreateClassCallExpression,
     findReactCreateClassModuleExports,
     findReactCreateClassExportDefault,
+    findPureReactComponents,
     getComponentName,
     getReactCreateClassSpec,
     getClassExtendReactSpec,
