@@ -2,7 +2,7 @@ import Runner from 'jscodeshift/dist/Runner';
 import path from 'path';
 
 export default function parse({ sourcePath, options }) {
-  Runner.run(
+  return Runner.run(
     path.resolve('./src/transform.js'),
     [sourcePath],
     {

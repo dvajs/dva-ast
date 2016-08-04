@@ -6,6 +6,10 @@ export default function transformer(file, api) {
   const j = api.jscodeshift;
   const root = j(file.source);
   const ReactUtils = getReactUtils(j);
+  const transformInfo = {
+    models: null,
+    components: null,
+  };
 
   const findDvaModel = (p) => {
     const models = [];
@@ -45,9 +49,7 @@ export default function transformer(file, api) {
   };
 
   if (file.path.indexOf('models') > -1) {
-    const models = findDvaModel(root);
-    // console.log('---------------- models ----------------');
-    // console.log(models[0].data)
+    transformInfo.models = findDvaModel(root);
   }
 
   // find components and connects
@@ -82,12 +84,8 @@ export default function transformer(file, api) {
     }
 
     if (components.length) {
-      console.log('---------------- components ----------------');
-      components.map(c => {
-        console.log(`${c.filePath}: ${c.componentName}`)
-        console.log(c.connect ? c.connect.data: null);
-      });
+      transformInfo.components = components;
     }
   }
-  return null;
+  return [null, transformInfo];
 }
