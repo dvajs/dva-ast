@@ -83,24 +83,5 @@ export default function transformer(file, api) {
       console.log(c.connect);
     });
   }
-
-  // const findContainers = (p) => {
-  //   const containers = [];
-  //   p.find(j.CallExpression, {
-  //     callee: {
-  //       type: 'Identifier',
-  //       name: 'connect',
-  //     },
-  //   }).forEach(p => {
-  //     containers.push(parseContainer(p, j));
-  //   });
-  //   return containers;
-  // };
-  //
-  // const containers = findContainers(root);
-  // if (containers && containers.length) {
-  //   console.log('---------------- containers ----------------');
-  //   console.log(containers);
-  // }
   return null;
 }

@@ -23,6 +23,7 @@ export default class Component extends XNode {
       this.componentName = node.id.name;
     }
     this.findConnect();
+    this.findDispatches();
   }
   findConnect() {
     const connects = this.root.find(this.j.CallExpression, {
@@ -44,5 +45,8 @@ export default class Component extends XNode {
         component: this,
       });
     }
+  }
+  findDispatches() {
+    // TODO, need to find all possible dispatches
   }
 }
