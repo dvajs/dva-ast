@@ -2,36 +2,35 @@ import recast from 'recast';
 import XNode from '../base/XNode';
 
 export default class ComponentConnect extends XNode {
-  constructor({ jscodeshift, nodePath, component }) {
+  constructor({ jscodeshift, nodePath }) {
     super();
     this.j = jscodeshift;
-    this.nodePath = nodePath;
-    this.component = component;
+    this.node = nodePath.node;
     this.data = {
       mapStateToProps: null,
     };
     if (nodePath) {
-      this.parse(nodePath.node);
+      this.parse(nodePath.node, nodePath);
     }
   }
-  parse(node) {
+  parse(node, nodePath) {
     const mapStateToProps = node.arguments[0];
     if (mapStateToProps) {
-      const func = this.findMapStateToPropsFunction(mapStateToProps);
+      const func = this.findMapStateToPropsFunction(mapStateToProps, nodePath);
       this.data.mapStateToProps = {
         data: this.analyzeMapStateToProps(func),
         func: recast.print(func).code,
       };
     }
   }
-  findMapStateToPropsFunction(mapStateToProps) {
+  findMapStateToPropsFunction(mapStateToProps, nodePath) {
     let func;
     const { type } = mapStateToProps;
     if (['ArrowFunctionExpression', 'FunctionExpression'].indexOf(type) > -1) {
       func = mapStateToProps;
     } else if (type === 'Identifier') {
       const funcName = mapStateToProps.name;
-      const resolvedScope = this.nodePath.scope.lookup(funcName);
+      const resolvedScope = nodePath.scope.lookup(funcName);
       if (resolvedScope) {
         resolvedScope.getBindings()[funcName].every(
           _p => {

@@ -6,16 +6,15 @@ export default class Component extends XNode {
   constructor({ nodePath, jscodeshift, filePath, root }) {
     super();
     this.j = jscodeshift;
-    this.nodePath = nodePath;
-    this.root = root;
+    this.node = nodePath.node;
     this.filePath = filePath;
     this.data = null;
     this.componentName = null;
     if (nodePath) {
-      this.parse(nodePath.node);
+      this.parse(nodePath.node, root);
     }
   }
-  parse(node) {
+  parse(node, root) {
     this.data = recast.print(node).code;
     if (node.type === 'VariableDeclarator') {
       this.componentName = node.id.name;
@@ -25,11 +24,11 @@ export default class Component extends XNode {
       this.componentName = node.id.name;
     }
 
-    this.findConnect();
+    this.findConnect(root);
     this.findDispatches();
   }
-  findConnect() {
-    const connects = this.root.find(this.j.CallExpression, {
+  findConnect(root) {
+    const connects = root.find(this.j.CallExpression, {
       callee: {
         type: 'Identifier',
         name: 'connect', // TODO: should consider alias
@@ -45,7 +44,6 @@ export default class Component extends XNode {
       this.connect = new ComponentConnect({
         nodePath: connects.get(0),
         jscodeshift: this.j,
-        component: this,
       });
     }
   }
