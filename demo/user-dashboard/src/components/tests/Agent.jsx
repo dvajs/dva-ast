@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import { connect } from 'dva';
+import React, { PropTypes } from 'react';
 
 class Agent extends React.Component {
   render() {
@@ -8,4 +9,4 @@ class Agent extends React.Component {
   }
 }
 
-export default Agent;
+export default connect(state => ({ user: state.user }))(Agent);

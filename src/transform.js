@@ -1,11 +1,11 @@
-import { parseModel, parseContainer } from './utils';
+import getReactUtils from './utils/ReactUtils';
 import DvaModel from './infrastructure/Model';
 import DvaComponent from './infrastructure/Component';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
   const root = j(file.source);
-  const ReactUtils = require('./utils/ReactUtils')(j);
+  const ReactUtils = getReactUtils(j);
 
   const findDvaModel = (p) => {
     const models = [];
@@ -52,32 +52,35 @@ export default function transformer(file, api) {
 
   // find components and connects
   const components = [];
+  const addComponent = (path) => {
+    components.push(
+      new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path, root })
+    );
+  };
   const componentsByCreateClass = ReactUtils.findReactCreateClass(root);
+  const componentsByCreateClassExportDefault = ReactUtils.findReactCreateClassExportDefault(root);
+  const componentsByCreateClassModuleExports = ReactUtils.findReactCreateClassModuleExports(root);
   const componentsByES6Class = ReactUtils.findReactES6ClassDeclaration(root);
 
-
-  // TODO: there's an bug in ReactUtils which didn't find those componets like
-  /*
-  module.exports = React.createClass()
-  export default React.createClass()
-  */
   if (componentsByCreateClass.size() > 0) {
-    componentsByCreateClass.forEach(path => {
-      components.push(new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path }));
-    });
+    componentsByCreateClass.forEach(addComponent);
   }
-
+  // TODO: this is not work when exprot default React.createClass
+  if (componentsByCreateClassExportDefault.size() > 0) {
+    componentsByCreateClassExportDefault.forEach(addComponent);
+  }
+  if (componentsByCreateClassModuleExports.size() > 0) {
+    componentsByCreateClassModuleExports.forEach(addComponent);
+  }
   if (componentsByES6Class.size() > 0) {
-    componentsByES6Class.forEach(path => {
-      components.push(new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path }));
-    });
+    componentsByES6Class.forEach(addComponent);
   }
 
   if (components.length) {
     console.log('---------------- components ----------------');
     components.map(c => {
       console.log(`${c.filePath}: ${c.componentName}`)
-      console.log(c.data);
+      console.log(c.connect);
     });
   }
 

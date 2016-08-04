@@ -29,7 +29,7 @@ export default class ModelSubscription extends XNode {
     }
 
     this.findActionTypeByCallee(node, dispatch, (action) => {
-      this.dispatches.push(action)
+      this.dispatches.push(action);
     });
   }
   findDispatchParamName(params) {

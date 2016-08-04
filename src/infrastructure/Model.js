@@ -78,8 +78,8 @@ export default class Model extends XNode {
 
       return {
         ...effect,
-        [actionName]: new ModelEffect({ node: curr.value, jscodeshift: this.j })
-      }
+        [actionName]: new ModelEffect({ node: curr.value, jscodeshift: this.j }),
+      };
     }, {});
   }
   parseReducers(node) {
@@ -98,8 +98,8 @@ export default class Model extends XNode {
 
       return {
         ...reducer,
-        [actionName]: new ModelReducer({ node: curr.value, jscodeshift: this.j })
-      }
+        [actionName]: new ModelReducer({ node: curr.value, jscodeshift: this.j }),
+      };
     }, {});
   }
 }

@@ -1,8 +1,9 @@
 import recast from 'recast';
 import XNode from '../base/XNode';
+import ComponentConnect from './ComponentConnect';
 
 export default class Component extends XNode {
-  constructor({ nodePath, jscodeshift, filePath }) {
+  constructor({ nodePath, jscodeshift, filePath, root }) {
     super();
     this.j = jscodeshift;
     this.nodePath = nodePath;
@@ -20,6 +21,28 @@ export default class Component extends XNode {
       this.componentName = node.id.name;
     } else if (node.type === 'ClassDeclaration') {
       this.componentName = node.id.name;
+    }
+    this.findConnect();
+  }
+  findConnect() {
+    const connects = this.root.find(this.j.CallExpression, {
+      callee: {
+        type: 'Identifier',
+        name: 'connect', // TODO: should consider alias
+      },
+    });
+
+    if (connects.size() > 0) {
+      // TODO, need to find the right connect for current component when there's muiltple connects
+      if (connects.size() > 1) {
+        console.error('There\'s muiltple connects in this file !');
+        return;
+      }
+      this.connect = new ComponentConnect({
+        nodePath: connects.get(0),
+        jscodeshift: this.j,
+        component: this,
+      });
     }
   }
 }

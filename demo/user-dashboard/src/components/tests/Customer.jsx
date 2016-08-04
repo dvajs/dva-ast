@@ -1,7 +1,7 @@
 var React = require('react');
 var PropTypes = React.PropTypes;
 
-var Customer = React.createClass({
+export default React.createClass({
 
   render: function() {
     return (
@@ -10,5 +10,3 @@ var Customer = React.createClass({
   }
 
 });
-
-module.exports = Customer;
