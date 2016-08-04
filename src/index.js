@@ -10,5 +10,15 @@ export default function parse({ sourcePath, options }) {
       dry: true,
       ...options,
     },
-  );
+  ).then(({ transformInfo }) => {
+    return transformInfo.reduce((prev, curr) => {
+      return {
+        models: curr.models ? prev.models.concat(curr.models) : prev.models,
+        components: curr.components ? prev.components.concat(curr.components) : prev.components,
+      }
+    }, {
+      models: [],
+      components: [],
+    });
+  });
 }

@@ -13,20 +13,6 @@ export default function transformer(file, api) {
 
   const findDvaModel = (p) => {
     const models = [];
-    /*
-    p.find(j.CallExpression, {
-      callee: {
-        type: 'MemberExpression',
-        object: { type: 'Identifier', name: 'app' },
-        property: { type: 'Identifier', name: 'model' },
-      },
-    }).forEach(p => {
-      const arg = p.node.arguments;
-      if (arg.length === 1 && arg[0].type === 'ObjectExpression') {
-        models.push(parseModel(arg[0]));
-      }
-    });
-    */
     p.find(j.ObjectExpression)
       .forEach(obj => {
         if (obj.value.properties) {
