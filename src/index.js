@@ -1,4 +1,4 @@
-import Runner from 'jscodeshift/dist/Runner';
+import Runner from 'dva-jscodeshift/dist/Runner';
 import path from 'path';
 
 export default function parse({ sourcePath, options }) {
