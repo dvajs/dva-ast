@@ -3,7 +3,7 @@ import path from 'path';
 
 export default function parse({ sourcePath, options }) {
   return Runner.run(
-    path.resolve('./src/transform.js'),
+    path.resolve(path.join(__dirname, './transform.js')),
     [sourcePath],
     {
       extensions: 'js,jsx',

@@ -1,9 +1,12 @@
 {
   "name": "dva-ast",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "license": "ISC",
   "author": "Chris Fan <chris.fan.dev@gmail.com>",
   "main": "./lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
     "pub": "npm run compile && npm publish",
