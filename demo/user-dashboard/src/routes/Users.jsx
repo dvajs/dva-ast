@@ -25,7 +25,7 @@ function Users({ location, dispatch, users }) {
       });
     },
     onCancel() {
-      dispatch({
+      this.props.dispatch({
         type: 'users/hideModal'
       });
     },

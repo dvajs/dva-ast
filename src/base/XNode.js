@@ -56,29 +56,40 @@ export default class XNode {
   // finally use recast api instead.
   // maybe it would be better that we should parse the path of model here
   findActionTypeByCallee(node, calleeName, cb) {
+    const analyzeAction = this.analyzeAction;
     recast.visit(node, {
       visitCallExpression(path) {
         const callee = path.node.callee;
         if (callee && callee.type === 'Identifier' && callee.name === calleeName) {
           const param = path.node.arguments[0];
-
-          if (param.type === 'ObjectExpression') {
-            param.properties.forEach(n => {
-              if (n.key.name === 'type') {
-                if (n.value.type === 'Literal') {
-                  cb(n.value.value);
-                } else if (n.value.type === 'Identifier') {
-                  cb(n.value.name); // TODO, need to find constants
-                }
-              }
-            });
-          }
-
+          analyzeAction(param, cb);
           return false;
         }
         return path.node;
       },
     });
+  }
+  analyzeAction(param, cb) {
+    if (param.type === 'ObjectExpression') {
+      param.properties.forEach(n => {
+        if (n.key.name === 'type') {
+          if (n.value.type === 'Literal') {
+            cb(n.value.value);
+          } else if (n.value.type === 'Identifier') {
+            cb(n.value.name); // TODO, need to find constants
+          }
+        }
+      });
+    }
+  }
+
+  findClosestCallExpression(path) {
+    if (path.node.type === 'CallExpression') {
+      return path.node;
+    } else if (path.node.type === 'MemberExpression') {
+      return this.findClosestCallExpression(path.parent);
+    }
+    return null;
   }
 
   // save to source file

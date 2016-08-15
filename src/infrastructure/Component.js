@@ -9,6 +9,7 @@ export default class Component extends XNode {
     this.node = nodePath.node;
     this.filePath = filePath;
     this.data = null;
+    this.dispatches = [];
     this.componentName = null;
     if (nodePath) {
       this.parse(nodePath.node, root);
@@ -25,7 +26,7 @@ export default class Component extends XNode {
     }
 
     this.findConnect(root);
-    this.findDispatches();
+    this.findDispatches(root);
   }
   findConnect(root) {
     const connects = root.find(this.j.CallExpression, {
@@ -47,7 +48,26 @@ export default class Component extends XNode {
       });
     }
   }
-  findDispatches() {
-    // TODO, need to find all possible dispatches
+  findDispatches(root) {
+    const dispatchMap = {};
+    root.find(this.j.Identifier, {
+      name: 'dispatch',
+    }).forEach(p => {
+      const parentNode = p.parent.node;
+      let actionObject = null;
+      if (parentNode.type === 'CallExpression') {
+        actionObject = parentNode.arguments[0];
+      } else if (parentNode.type === 'MemberExpression') {
+        const callNode = this.findClosestCallExpression(p.parent);
+        actionObject = callNode && callNode.arguments ? callNode.arguments[0] : null;
+      }
+      if (actionObject) {
+        this.analyzeAction(actionObject, (actionType) => {
+          dispatchMap[actionType] = true;
+        });
+      }
+    });
+
+    this.dispatches = Object.keys(dispatchMap);
   }
 }
