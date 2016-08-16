@@ -12,8 +12,8 @@
     "pub": "npm run compile && npm publish",
     "prepublish": "npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "./node_modules/.bin/babel-node server.js",
-    "transform": "jscodeshift -t src/transform.js demo/user-dashboard -d --ignore-config demo/user-dashboard/.gitignore --extensions js,jsx"
+    "demo": "nodemon server.js --exec babel-node  -e .js --ignore 'demo/**'",
+    "transform": "jscodeshift -t src/transform.js dva-projects/user-dashboard -d --ignore-config dva-projects/user-dashboard/.gitignore --extensions js,jsx"
   },
   "dependencies": {
     "ast-types": "^0.8.18",
@@ -28,6 +28,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "eslint": "^3.1.1",
     "eslint-config-airbnb-base": "^5.0.0",
-    "eslint-plugin-import": "^1.11.1"
+    "eslint-plugin-import": "^1.11.1",
+    "nodemon": "^1.10.0"
   }
 }

@@ -11,15 +11,13 @@ export default function parse({ sourcePath, options }) {
       ignoreConfig: [`${sourcePath}/.gitignore`],
       ...options,
     },
-  ).then(({ transformInfo }) => {
-    return transformInfo.reduce((prev, curr) => {
-      return {
-        models: curr.models ? prev.models.concat(curr.models) : prev.models,
-        components: curr.components ? prev.components.concat(curr.components) : prev.components,
-      };
-    }, {
+  ).then(({ transformInfo }) =>
+    transformInfo.reduce((prev, curr) => ({
+      models: curr.models ? prev.models.concat(curr.models) : prev.models,
+      components: curr.components ? prev.components.concat(curr.components) : prev.components,
+    }), {
       models: [],
       components: [],
-    });
-  });
+    })
+  );
 }
