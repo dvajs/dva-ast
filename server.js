@@ -6,7 +6,8 @@ const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   parse({
-    sourcePath: './dva-projects/user-dashboard'
+    // sourcePath: './dva-projects/user-dashboard'
+    sourcePath: './demo'
   }).then(
     data => {
       res.end(JSON.stringify(data))

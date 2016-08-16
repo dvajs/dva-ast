@@ -28,7 +28,7 @@ class Actions extends React.Component {
         }
       });
 
-      subscriptions.forEach(subscription => {
+      (subscriptions || []).forEach(subscription => {
         if (subscription.dispatches) {
           subscription.dispatches.forEach(subscriptionDispatch => {
             actionObj[subscriptionDispatch] =
