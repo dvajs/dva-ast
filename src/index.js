@@ -2,13 +2,23 @@ import Runner from 'dva-jscodeshift/dist/Runner';
 import path from 'path';
 
 export default function parse({ sourcePath, options }) {
+  let ignoreConfig = [];
+  try {
+    const exists = require('fs').statSync(`${sourcePath}/.gitignore`).isFile();
+    if (exists) {
+      ignoreConfig.push(`${sourcePath}/.gitignore`);
+    }
+  } catch (e) {
+    console.warn('no .gitignore found!');
+  }
+
   return Runner.run(
     path.resolve(path.join(__dirname, './transform.js')),
     [sourcePath],
     {
       extensions: 'js,jsx',
       dry: true,
-      ignoreConfig: [`${sourcePath}/.gitignore`],
+      ignoreConfig,
       ...options,
     },
   ).then(({ transformInfo }) =>
