@@ -8,7 +8,9 @@ class Components extends React.Component {
         <ul>
           {
             comps.map(comp =>
-              <li key={comp.filePath}>{comp.componentName}</li>
+              <li key={comp.filePath}>
+                {comp.componentName}
+              </li>
             )
           }
         </ul>
