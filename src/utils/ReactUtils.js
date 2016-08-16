@@ -125,6 +125,19 @@ module.exports = function(j) {
   // Finds all classes that extend React.Component
   const findReactES6ClassDeclaration = path => {
     const componentImport = findReactComponentName(path);
+    const defaultSelector = {
+      superClass: {
+        type: 'MemberExpression',
+        object: {
+          type: 'Identifier',
+          name: 'React',
+        },
+        property: {
+          type: 'Identifier',
+          name: 'Component',
+        },
+      },
+    };
     const selector = componentImport
       ? {
         superClass: {
@@ -132,22 +145,16 @@ module.exports = function(j) {
           name: componentImport,
         },
       }
-      : {
-        superClass: {
-          type: 'MemberExpression',
-          object: {
-            type: 'Identifier',
-            name: 'React',
-          },
-          property: {
-            type: 'Identifier',
-            name: 'Component',
-          },
-        },
-      };
+      : defaultSelector;
 
-    return path
-     .find(j.ClassDeclaration, selector);
+    let components = path.find(j.ClassDeclaration, selector);
+
+    // try to find components by React.Component
+    if (componentImport && components.size() === 0) {
+      components = path.find(j.ClassDeclaration, defaultSelector);
+    }
+
+    return components;
   };
 
   // ---------------------------------------------------------------------------
