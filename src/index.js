@@ -8,6 +8,7 @@ export default function parse({ sourcePath, options }) {
     {
       extensions: 'js,jsx',
       dry: true,
+      ignoreConfig: [`${sourcePath}/.gitignore`],
       ...options,
     },
   ).then(({ transformInfo }) => {
@@ -15,7 +16,7 @@ export default function parse({ sourcePath, options }) {
       return {
         models: curr.models ? prev.models.concat(curr.models) : prev.models,
         components: curr.components ? prev.components.concat(curr.components) : prev.components,
-      }
+      };
     }, {
       models: [],
       components: [],
