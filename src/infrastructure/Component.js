@@ -10,6 +10,7 @@ export default class Component extends XNode {
     this.filePath = filePath;
     this.data = null;
     this.dispatches = [];
+    this.connects = [];
     this.componentName = null;
     if (nodePath) {
       this.parse(nodePath.node, root);
@@ -42,10 +43,10 @@ export default class Component extends XNode {
         console.error('There\'s muiltple connects in this file !');
         return;
       }
-      this.connect = new ComponentConnect({
+      this.connects.push(new ComponentConnect({
         nodePath: connects.get(0),
         jscodeshift: this.j,
-      });
+      }));
     }
   }
   findDispatches(root) {

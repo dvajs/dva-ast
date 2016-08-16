@@ -7,7 +7,7 @@ class States extends React.Component {
       <div>
         <ul>
           {
-            models.map(m => <li>{m.data.namespace}</li>)
+            models.map(m => <li key={m.data.namespace}>{m.data.namespace}</li>)
           }
         </ul>
       </div>
