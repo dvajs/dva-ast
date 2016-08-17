@@ -18,7 +18,7 @@ export default {
   },
 
   subscriptions: [
-    function (dispatch) {
+    function ({ dispatch }) {
       hashHistory.listen(location => {
         if (location.pathname === '/users') {
           dispatch({
