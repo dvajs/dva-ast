@@ -22,7 +22,7 @@
     "redbox-react": "^1.2.10"
   },
   "scripts": {
-    "start": "dora --plugins \"proxy,webpack,webpack-hmr\"",
+    "start": "dora --plugins \"proxy,webpack\"",
     "build": "atool-build",
     "test": "atool-test-mocha ./src/**/*-test.js"
   }

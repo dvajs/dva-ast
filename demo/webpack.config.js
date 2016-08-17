@@ -5,13 +5,13 @@ module.exports = function(webpackConfig, env) {
   webpackConfig.babel.plugins.push('transform-runtime');
 
   // Support hmr
-  if (env === 'development') {
-    webpackConfig.babel.plugins.push(['dva-hmr', {
-      entries: [
-        './src/index.js',
-      ],
-    }]);
-  }
+  // if (env === 'development') {
+  //   webpackConfig.babel.plugins.push(['dva-hmr', {
+  //     entries: [
+  //       './src/index.js',
+  //     ],
+  //   }]);
+  // }
 
   // Support CSS Modules
   // Parse all less files as css module.
