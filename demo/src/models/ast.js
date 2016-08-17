@@ -22,6 +22,13 @@ export default {
         });
       }
     },
+    *['ast/saveReducer']({ payload }) {
+      try {
+        const result = yield call(astService.saveReducer, payload);
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
   reducers: {
     ['ast/query'](state) {
@@ -32,6 +39,13 @@ export default {
     },
     ['ast/query/failure'](state, action) {
       return { ...state, loading: false, ...action.payload };
+    },
+
+    ['ast/saveReducer'](state, action) {
+      // only for testing
+      state.models[0].data.reducers[action.payload.action] = action.payload;
+      state.models = state.models.concat([]);
+      return { ...state };
     },
   },
 

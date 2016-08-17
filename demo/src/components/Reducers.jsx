@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
+import { connect } from 'dva';
+import Editor from './Editor';
 
 class Reducers extends React.Component {
   getReducers(models = []) {
@@ -14,6 +16,12 @@ class Reducers extends React.Component {
     });
     return reducers;
   }
+  saveReducer(reducer) {
+    this.props.dispatch({
+      type: 'ast/saveReducer',
+      payload: reducer,
+    })
+  }
   render() {
     const { models } = this.props;
     const reducers = this.getReducers(models);
@@ -22,7 +30,13 @@ class Reducers extends React.Component {
         <ul>
           {
             reducers.map(reducer =>
-              <li key={`${reducer.action}${reducer.model}`}>{reducer.action} from {reducer.model}</li>
+              <li key={`${reducer.action}${reducer.model}`}>
+                {reducer.action} from {reducer.model}
+                <Editor
+                  source={reducer.data}
+                  onChange={(val) => this.saveReducer({ ...reducer, data: val })}
+                />
+              </li>
             )
           }
         </ul>
@@ -31,4 +45,4 @@ class Reducers extends React.Component {
   }
 }
 
-export default Reducers;
+export default connect(() => ({}))(Reducers);

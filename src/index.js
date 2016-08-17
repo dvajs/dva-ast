@@ -1,10 +1,11 @@
 import Runner from 'dva-jscodeshift/dist/Runner';
 import path from 'path';
+import fs from 'fs';
 
 export default function parse({ sourcePath, options }) {
-  let ignoreConfig = [];
+  const ignoreConfig = [];
   try {
-    const exists = require('fs').statSync(`${sourcePath}/.gitignore`).isFile();
+    const exists = fs.statSync(`${sourcePath}/.gitignore`).isFile();
     if (exists) {
       ignoreConfig.push(`${sourcePath}/.gitignore`);
     }

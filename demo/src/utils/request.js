@@ -22,7 +22,13 @@ function checkStatus(response) {
  * @return {object}           An object containing either "data" or "err"
  */
 export default function request(url, options) {
-  return fetch(url, options)
+  const opts = { ...options, credentials: 'same-origin' };
+  opts.headers = {
+    ...opts.headers,
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
+  return fetch(url, opts)
     .then(checkStatus)
     .then(parseJSON)
     .then((data) => ({ data }))
