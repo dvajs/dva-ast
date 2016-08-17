@@ -1,20 +1,21 @@
-const http = require('http');
+import express from 'express';
+import parse from './src';
+
 const hostname = '127.0.0.1';
 const port = 3000;
-const parse = require('./src/index').default;
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
+const app = express();
+
+app.get('/api/ast/query', (req, res) => {
   parse({
     // sourcePath: './dva-projects/user-dashboard'
     sourcePath: './demo'
   }).then(
     data => {
-      res.end(JSON.stringify(data))
+      res.json(data);
     }
   );
 });
 
-server.listen(port, hostname, () => {
+app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
