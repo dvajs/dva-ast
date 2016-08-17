@@ -4,7 +4,7 @@ import ModelEffect from './ModelEffect';
 import ModelReducer from './ModelReducer';
 
 export default class Model extends XNode {
-  constructor({ node, jscodeshift }) {
+  constructor({ node, jscodeshift, filePath }) {
     super();
     this.j = jscodeshift;
     this.node = node;
@@ -15,6 +15,7 @@ export default class Model extends XNode {
       effects: null,
       reducers: null,
     };
+    this.filePath = filePath;
     if (node) {
       this.parse(node);
     }
@@ -98,7 +99,11 @@ export default class Model extends XNode {
 
       return {
         ...reducer,
-        [actionName]: new ModelReducer({ node: curr.value, jscodeshift: this.j }),
+        [actionName]: new ModelReducer({
+          node: curr.value,
+          jscodeshift: this.j,
+          filePath: this.filePath,
+        }),
       };
     }, {});
   }

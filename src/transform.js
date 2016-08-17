@@ -27,7 +27,7 @@ export default function transformer(file, api) {
           }, {});
 
           if (properties.namespace && properties.state) {
-            models.push(new DvaModel({ node: obj.value, jscodeshift: j }));
+            models.push(new DvaModel({ node: obj.value, jscodeshift: j, filePath: file.path }));
           }
         }
       });

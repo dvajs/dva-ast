@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import parse from './src';
+import parse, { saveReducer } from './src';
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -20,8 +20,13 @@ app.get('/api/ast/query', (req, res) => {
 
 
 app.post('/api/ast/saveReducer', (req, res) => {
-  console.log(JSON.stringify(req.body));
-  res.json(req.body)
+  try {
+    saveReducer(req.body, () => {
+      res.json(req.body)
+    });
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 app.listen(port, () => {

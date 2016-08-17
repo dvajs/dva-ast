@@ -12,7 +12,7 @@
     "pub": "npm run compile && npm publish",
     "prepublish": "npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "nodemon server.js --exec babel-node  -e .js --ignore 'demo/**'",
+    "demo": "nodemon server.js --exec babel-node  -e .js --ignore 'demo/**' --ignore 'dva-projects/**'",
     "transform": "jscodeshift -t src/transform.js dva-projects/user-dashboard -d --ignore-config dva-projects/user-dashboard/.gitignore --extensions js,jsx"
   },
   "dependencies": {
