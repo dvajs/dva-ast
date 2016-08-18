@@ -1,6 +1,6 @@
 {
   "name": "dva-ast",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "license": "ISC",
   "author": "Chris Fan <chris.fan.dev@gmail.com>",
   "main": "./lib/index.js",
@@ -13,7 +13,7 @@
     "prepublish": "npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo": "nodemon server.js --exec babel-node  -e .js --ignore 'demo/**' --ignore 'dva-projects/**'",
-    "transform": "jscodeshift -t src/transform.js dva-projects/user-dashboard -d --ignore-config dva-projects/user-dashboard/.gitignore --extensions js,jsx"
+    "transform": "jscodeshift -t src/transform.js demo -d --ignore-config demo/.gitignore --extensions js,jsx"
   },
   "dependencies": {
     "ast-types": "^0.8.18",

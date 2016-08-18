@@ -9,8 +9,8 @@ const app = express();
 app.use(bodyParser.json());
 app.get('/api/ast/query', (req, res) => {
   parse({
-    // sourcePath: './dva-projects/user-dashboard'
-    sourcePath: './demo'
+    sourcePath: './dva-projects/user-dashboard'
+    // sourcePath: './demo'
   }).then(
     data => {
       res.json(data);

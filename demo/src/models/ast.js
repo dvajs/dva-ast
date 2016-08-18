@@ -7,6 +7,13 @@ export default {
     components: [],
     models: [],
   },
+  subscriptions: [
+    ({ dispatch }) => {
+      dispatch({
+        type: 'aaaa',
+      });
+    },
+  ],
   effects: {
     *['ast/query']({ payload }) {
       try {

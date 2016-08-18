@@ -24,15 +24,28 @@ export default function parse({ sourcePath, options }) {
       ignoreConfig,
       ...options,
     },
-  ).then(({ transformInfo }) =>
-    transformInfo.reduce((prev, curr) => ({
-      models: curr.models ? prev.models.concat(curr.models) : prev.models,
-      components: curr.components ? prev.components.concat(curr.components) : prev.components,
+  ).then(({ transformInfo }) => {
+    const result = transformInfo.reduce((prev, curr) => ({
+      models: curr.models.concat(prev.models),
+      effects: curr.effects.concat(prev.effects),
+      reducers: curr.reducers.concat(prev.reducers),
+      components: curr.components.concat(prev.components),
+      dispatches: curr.dispatches.concat(prev.dispatches),
     }), {
       models: [],
+      effects: [],
+      reducers: [],
       components: [],
-    })
-  );
+      dispatches: [],
+    });
+
+    const d = {};
+    result.dispatches.forEach(actionType => {
+      d[actionType] = true;
+    });
+    result.dispatches = Object.keys(d);
+    return result;
+  });
 }
 
 export function saveReducer(reducer, cb) {

@@ -1,6 +1,7 @@
 import getReactUtils from './utils/ReactUtils';
-import DvaModel from './infrastructure/Model';
-import DvaComponent from './infrastructure/Component';
+import getInfrastructureUtils from './utils/InfrastructureUtils';
+import componentParserFactory from './parsers/component';
+import modelParserFactory from './parsers/model';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -10,73 +11,38 @@ export default function transformer(file, api) {
   } catch (e) {
     console.error(`Error in ${file.path}: ${e}`);
   }
+
   const ReactUtils = getReactUtils(j);
+  const infrastructureUtils = getInfrastructureUtils(j);
+  const modelParser = modelParserFactory(j);
+  const componentParser = componentParserFactory(j);
   const transformInfo = {
-    models: null,
-    components: null,
-  };
-
-  const findDvaModel = (p) => {
-    const models = [];
-    p.find(j.ObjectExpression)
-      .forEach(obj => {
-        if (obj.value.properties) {
-          const properties = obj.value.properties.reduce((prev, curr) => {
-            if (curr.type === 'Property') {
-              return {
-                ...prev,
-                [curr.key.name]: true,
-              };
-            }
-            return prev;
-          }, {});
-
-          if (properties.namespace && properties.state) {
-            models.push(new DvaModel({ node: obj.value, jscodeshift: j, filePath: file.path }));
-          }
-        }
-      });
-    return models;
+    dispatches: [],
+    components: [],
+    models: [],
+    effects: [],
+    reducers: [],
   };
 
   if (file.path.indexOf('models') > -1) {
-    transformInfo.models = findDvaModel(root);
+    infrastructureUtils.findModels(root, (path) => {
+      const { model, effects, reducers, dispatches } = modelParser.parse({
+        nodePath: path, jscodeshift: j, filePath: file.path,
+      });
+      transformInfo.models.push(model);
+      transformInfo.effects = transformInfo.effects.concat(effects);
+      transformInfo.reducers = transformInfo.reducers.concat(reducers);
+      transformInfo.dispatches = transformInfo.dispatches.concat(dispatches);
+    });
   }
 
-  // find components and connects
-  const components = [];
-  const addComponent = (path) => {
-    components.push(
-      new DvaComponent({ nodePath: path, jscodeshift: j, filePath: file.path, root })
-    );
-  };
   if (ReactUtils.hasReact(root)) {
-    const componentsByCreateClass = ReactUtils.findReactCreateClass(root);
-    const componentsByCreateClassExportDefault = ReactUtils.findReactCreateClassExportDefault(root);
-    const componentsByCreateClassModuleExports = ReactUtils.findReactCreateClassModuleExports(root);
-    const componentsByES6Class = ReactUtils.findReactES6ClassDeclaration(root);
-    const componentsByPureFunction = ReactUtils.findPureReactComponents(root);
-
-    if (componentsByCreateClass.size() > 0) {
-      componentsByCreateClass.forEach(addComponent);
-    }
-    // TODO: this is not work when exprot default React.createClass
-    if (componentsByCreateClassExportDefault.size() > 0) {
-      componentsByCreateClassExportDefault.forEach(addComponent);
-    }
-    if (componentsByCreateClassModuleExports.size() > 0) {
-      componentsByCreateClassModuleExports.forEach(addComponent);
-    }
-    if (componentsByES6Class.size() > 0) {
-      componentsByES6Class.forEach(addComponent);
-    }
-    if (componentsByPureFunction.size() > 0) {
-      componentsByPureFunction.forEach(addComponent);
-    }
-
-    if (components.length) {
-      transformInfo.components = components;
-    }
+    infrastructureUtils.findComponents(root, (path) => {
+      const component = componentParser.parse({ nodePath: path, filePath: file.path, root });
+      transformInfo.components.push(component);
+      transformInfo.dispatches = transformInfo.dispatches.concat(component.dispatches);
+    });
   }
+
   return [null, transformInfo];
 }
