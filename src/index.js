@@ -38,26 +38,30 @@ export default function parse({ sourcePath, options }) {
 export function saveReducer(reducer, cb) {
   fs.readFile(reducer.filePath, (err, source) => {
     if (err) {
-      throw err;
+      cb({ err });
+      return;
     }
     const data = source.toString();
     const out = jscodeshift(data);
-    out.find(
-      jscodeshift[reducer.node.type], { start: reducer.node.start }
-    ).forEach(p => {
-      try {
+
+    try {
+      out.find(
+        jscodeshift[reducer.node.type], { start: reducer.node.start }
+      ).forEach(p => {
         const reducerCollection = jscodeshift(`(${reducer.data})`);
         reducerCollection.forEach(r => {
           p.replace(r.value.program.body[0].expression);
         });
-      } catch (e) {
-        throw e;
-      }
-    });
+      });
+    } catch (e) {
+      cb({ err: e });
+      return;
+    }
 
     fs.writeFile(reducer.filePath, out.toSource(), (writeError) => {
       if (writeError) {
-        throw writeError;
+        cb({ err: writeError });
+        return;
       }
       cb();
     });

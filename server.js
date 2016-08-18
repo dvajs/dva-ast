@@ -20,13 +20,15 @@ app.get('/api/ast/query', (req, res) => {
 
 
 app.post('/api/ast/saveReducer', (req, res) => {
-  try {
-    saveReducer(req.body, () => {
+  saveReducer(req.body, (err) => {
+    if (err) {
+      res.status(400).json({
+        errorMessage: err,
+      });
+    } else {
       res.json(req.body)
-    });
-  } catch (e) {
-    console.error(e);
-  }
+    }
+  });
 });
 
 app.listen(port, () => {

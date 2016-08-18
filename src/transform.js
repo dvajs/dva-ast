@@ -4,7 +4,12 @@ import DvaComponent from './infrastructure/Component';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
-  const root = j(file.source);
+  let root;
+  try {
+    root = j(file.source);
+  } catch (e) {
+    console.error(`Error in ${file.path}: ${e}`);
+  }
   const ReactUtils = getReactUtils(j);
   const transformInfo = {
     models: null,
