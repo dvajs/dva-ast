@@ -6,6 +6,9 @@ export default {
   state: {
     components: [],
     models: [],
+    dispatches: [],
+    reducers: [],
+    effects: [],
   },
   subscriptions: [
     ({ dispatch }) => {

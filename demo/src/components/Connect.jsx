@@ -2,21 +2,17 @@ import React, { PropTypes } from 'react'
 
 class Connect extends React.Component {
   render() {
-    const { connects } = this.props;
+    const { stateMappings = { modelIds: [] } } = this.props;
     return (
       <div>
-        connects:
+        stateMappings:
         <ul>
           {
-            connects.map((c, i) =>
-              <li key={i}>
-                {
-                  Object.keys(c.data.mapStateToProps.data).map(
-                    key => c.data.mapStateToProps.data[key].model
-                  )
-                }
+            stateMappings.modelIds ? stateMappings.modelIds.map(modelId =>
+              <li key={modelId}>
+                {modelId}
               </li>
-            )
+            ) : null
           }
           <li>
             <input />

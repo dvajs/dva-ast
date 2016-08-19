@@ -11,7 +11,7 @@ class Components extends React.Component {
             comps.map(comp =>
               <li key={comp.filePath}>
                 {comp.componentName}
-                <Connect connects={comp.connects} />
+                <Connect stateMappings={comp.stateMappings} />
               </li>
             )
           }
