@@ -52,10 +52,16 @@ export default {
     },
 
     ['ast/saveReducer'](state, action) {
-      // only for testing
-      state.models[0].data.reducers[action.payload.action] = action.payload;
-      state.models = state.models.concat([]);
-      return { ...state };
+      let { reducers } = state;
+      const index = reducers.findIndex(el => el.id === action.payload.id);
+      if (index > -1) {
+        reducers = [
+          ...reducers.splice(0, index - 1),
+          action.payload,
+          ...reducers.splice(index + 1, reducers.length),
+        ]
+      }
+      return { ...state, reducers };
     },
   },
 

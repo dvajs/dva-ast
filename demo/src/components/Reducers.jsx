@@ -20,7 +20,7 @@ class Reducers extends React.Component {
                 {reducer.actionType} from {reducer.modelId}
                 <Editor
                   source={reducer.source}
-                  onChange={(val) => this.saveReducer({ ...reducer, data: val })}
+                  onChange={(val) => this.saveReducer({ ...reducer, source: val })}
                 />
               </li>
             )
