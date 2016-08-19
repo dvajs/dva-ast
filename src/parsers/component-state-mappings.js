@@ -39,6 +39,8 @@ export default function (j) {
                 func = funcNode;
               }
             }
+
+            return false;
           }
         );
       }
@@ -87,8 +89,10 @@ export default function (j) {
   };
 
   const getModelsFromMapStateToPropsFunction = (func) => {
-    if (!func) return {};
-    console.log(func);
+    if (!func || !func.params || !func.params.length) {
+      return {};
+    }
+
     const param = func.params[0];
     const body = func.body;
     let stateName;
@@ -123,7 +127,7 @@ export default function (j) {
         nodePath
       );
       stateMapping.source = u.getSourceFromNode(funcNode);
-      stateMapping.modelIds = Object.keys(getModelsFromMapStateToPropsFunction(funcNode.node));
+      stateMapping.modelIds = Object.keys(getModelsFromMapStateToPropsFunction(funcNode));
     }
 
     return stateMapping;
