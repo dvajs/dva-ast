@@ -104,7 +104,7 @@ export default function (j) {
     if (componentsByCreateClass.size() > 0) {
       componentsByCreateClass.forEach(cb);
     }
-    // TODO: this is not work when exprot default React.createClass
+    // TODO: this is not work when export default React.createClass
     if (componentsByCreateClassExportDefault.size() > 0) {
       componentsByCreateClassExportDefault.forEach(cb);
     }
@@ -139,6 +139,17 @@ export default function (j) {
       });
   };
 
+  const findRoutes = (root, cb) => {
+    cb(root.find(j.JSXElement, {
+      openingElement: {
+        name: {
+          type: 'JSXIdentifier',
+          name: 'Router',
+        }
+      },
+    }).at(0));
+  };
+
   return {
     getPropertyKeyName,
     recursiveParse,
@@ -148,5 +159,6 @@ export default function (j) {
     getSourceFromNode,
     findComponents,
     findModels,
+    findRoutes,
   };
 }

@@ -31,12 +31,14 @@ export default function parse({ sourcePath, options }) {
       reducers: curr.reducers.concat(prev.reducers),
       components: curr.components.concat(prev.components),
       dispatches: curr.dispatches.concat(prev.dispatches),
+      routes: curr.routes.concat(prev.routes),
     }), {
       models: [],
       effects: [],
       reducers: [],
       components: [],
       dispatches: [],
+      routes: [],
     });
 
     const d = {};
