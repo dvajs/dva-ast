@@ -11,7 +11,7 @@ export default function (j) {
     componentName: '',
     node: null,             // ast node
     source: null,           // source code
-    stateMappings: [],      // stateMapping objects
+    stateMappings: {},      // stateMapping objects
     dispatchMappings: [],   // TODO: mapDispatchToProps
     dispatches: [],
   });
