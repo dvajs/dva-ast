@@ -145,7 +145,7 @@ export default function (j) {
         name: {
           type: 'JSXIdentifier',
           name: 'Router',
-        }
+        },
       },
     }).at(0));
   };
