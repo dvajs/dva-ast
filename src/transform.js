@@ -2,6 +2,7 @@ import getReactUtils from './utils/ReactUtils';
 import getInfrastructureUtils from './utils/InfrastructureUtils';
 import componentParserFactory from './parsers/component';
 import modelParserFactory from './parsers/model';
+import routeParserFactory from './parsers/route';
 
 export default function transformer(file, api) {
   const j = api.jscodeshift;
@@ -16,12 +17,14 @@ export default function transformer(file, api) {
   const infrastructureUtils = getInfrastructureUtils(j);
   const modelParser = modelParserFactory(j);
   const componentParser = componentParserFactory(j);
+  const routeParser = routeParserFactory(j);
   const transformInfo = {
     dispatches: [],
     components: [],
     models: [],
     effects: [],
     reducers: [],
+    routes: [],
   };
 
   if (file.path.indexOf('models') > -1) {
@@ -41,6 +44,13 @@ export default function transformer(file, api) {
       const component = componentParser.parse({ nodePath: path, filePath: file.path, root });
       transformInfo.components.push(component);
       transformInfo.dispatches = transformInfo.dispatches.concat(component.dispatches);
+    });
+  }
+
+  if (ReactUtils.hasModule(root, 'dva/router')) {
+    infrastructureUtils.findRoutes(root, path => {
+      const route = routeParser.parse({ nodePath: path, filePath: file.path });
+      transformInfo.routes.push(route);
     });
   }
 
