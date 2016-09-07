@@ -21,7 +21,7 @@ export default function (j) {
     return returnVal;
   };
 
-  const getRouteTree = (node, parentPath) => {
+  const getRouteTree = (node, parentPath, parentId) => {
     if (node.type === 'Literal' || node.type === 'JSXExpressionContainer') return null;
     if (node.type === 'JSXElement' &&
         node.openingElement &&
@@ -47,10 +47,16 @@ export default function (j) {
           `${parentPath}/${currentRoute.path}`;
       }
 
-      currentRoute.id = `${currentRoute.type}-${currentRoute.absolutePath || 'noAbsolutePath'}`;
+      if (currentRoute.absolutePath) {
+        currentRoute.id = `${currentRoute.type}-${currentRoute.absolutePath}`;
+      } else if (!parentId) {
+        currentRoute.id = `${currentRoute.type}-root`;
+      } else {
+        currentRoute.id = `${currentRoute.type}-parentId_${parentId}`;
+      }
 
       (node.children || []).forEach(child => {
-        const childRoute = getRouteTree(child, currentRoute.path || '');
+        const childRoute = getRouteTree(child, currentRoute.path || '', currentRoute.id);
         if (childRoute) currentRoute.children.push(childRoute);
       });
 
