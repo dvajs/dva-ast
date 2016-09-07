@@ -47,6 +47,8 @@ export default function (j) {
           `${parentPath}/${currentRoute.path}`;
       }
 
+      currentRoute.id = `${currentRoute.type}-${currentRoute.absolutePath || 'noAbsolutePath'}`;
+
       (node.children || []).forEach(child => {
         const childRoute = getRouteTree(child, currentRoute.path || '');
         if (childRoute) currentRoute.children.push(childRoute);
