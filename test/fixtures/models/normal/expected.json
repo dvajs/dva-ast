@@ -1,0 +1,42 @@
+[
+  {
+    "dispatches": [
+      "add"
+    ],
+    "reducers": [
+      {
+        "id": "count_reducer_add",
+        "source": "function(state) { return state + 1; }",
+        "filePath": "./models/normal/actual.js",
+        "modelId": "count",
+        "actionType": "add"
+      }
+    ],
+    "effects": [
+      {
+        "id": "count_effect_addAsync",
+        "source": "function*(_, { call, select, put }) {\n  yield put({ type: 'add' });\n}",
+        "filePath": "./models/normal/actual.js",
+        "modelId": "count",
+        "actionType": "addAsync",
+        "dispatches": [
+          "add"
+        ]
+      }
+    ],
+    "model": {
+      "id": "count",
+      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    reducers: {\n      add(state) { return state + 1; },\n    },\n\n    effects: {\n      *addAsync(_, { call, select, put }) {\n        yield put({ type: 'add' });\n      },\n    }\n}",
+      "filePath": "./models/normal/actual.js",
+      "namespace": "count",
+      "state": {},
+      "effects": [
+        "count_effect_addAsync"
+      ],
+      "reducers": [
+        "count_reducer_add"
+      ],
+      "subscriptions": []
+    }
+  }
+]
