@@ -1,0 +1,37 @@
+[
+  {
+    "source": "<Router history={ history }>\n  <Route path=\"/\" component={A} />\n  <Route path=\"/b\">\n    <Route path=\"/test\" component={B} />\n  </Route>\n</Router>",
+    "filePath": "./router/normal/actual.js",
+    "tree": {
+      "type": "Router",
+      "children": [
+        {
+          "type": "Route",
+          "children": [],
+          "path": "/",
+          "component": "A",
+          "absolutePath": "/",
+          "id": "Route-/"
+        },
+        {
+          "type": "Route",
+          "children": [
+            {
+              "type": "Route",
+              "children": [],
+              "path": "/test",
+              "component": "B",
+              "absolutePath": "/test",
+              "id": "Route-/test"
+            }
+          ],
+          "path": "/b",
+          "absolutePath": "/b",
+          "id": "Route-/b"
+        }
+      ],
+      "history": "history",
+      "id": "Router-root"
+    }
+  }
+]

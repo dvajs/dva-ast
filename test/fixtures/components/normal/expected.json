@@ -1,0 +1,11 @@
+[
+  {
+    "id": "./components/normal/actual.js_Normal",
+    "filePath": "./components/normal/actual.js",
+    "componentName": "Normal",
+    "source": "function Normal() {\n  return (\n    <div>Normal</div>\n  );\n}",
+    "stateMappings": {},
+    "dispatchMappings": [],
+    "dispatches": []
+  }
+]
