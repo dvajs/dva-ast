@@ -5,6 +5,7 @@ import j from 'dva-jscodeshift/dist/core';
 
 import componentParserFactory from '../src/parsers/component';
 import modelParserFactory from '../src/parsers/model';
+import routeParserFactory from '../src/parsers/route';
 import getInfrastructureUtils from '../src/utils/InfrastructureUtils';
 import getReactUtils from '../src/utils/ReactUtils';
 
@@ -12,6 +13,7 @@ const fixtures = join(__dirname, 'fixtures');
 const infrastructureUtils = getInfrastructureUtils(j);
 const componentParser = componentParserFactory(j);
 const modeltParser = modelParserFactory(j);
+const routeParser = routeParserFactory(j);
 
 function buildTests(type, { getResult }) {
   const dir = join(fixtures, type);
@@ -90,5 +92,20 @@ describe('dva-ast', () => {
       });
       return results;
     },
-  })
+  });
+
+  // router
+  buildTests('router', {
+    getResult({ root, filePath }) {
+      const results = [];
+      infrastructureUtils.findRoutes(root, nodePath => {
+        const result = routeParser.parse({
+          nodePath,
+          filePath,
+        });
+        results.push(normalize(result));
+      });
+      return results;
+    },
+  });
 });
