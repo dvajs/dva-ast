@@ -41,6 +41,9 @@ export default function parse({ sourcePath, options }) {
       routes: [],
     });
 
+    // TODO:
+    // 转化 models 和 dispatches 里的 action 为 String
+
     const d = {};
     result.dispatches.forEach(actionType => {
       d[actionType] = true;
