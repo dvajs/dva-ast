@@ -1,4 +1,5 @@
 import './index.html';
+import 'antd/dist/antd.css'
 import './index.less';
 import dva, { connect } from 'dva';
 

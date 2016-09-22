@@ -11,6 +11,8 @@ class Components extends React.Component {
             comps.map(comp =>
               <li key={comp.filePath}>
                 {comp.componentName}
+                <a onClick={() => this.props.removeComponent(comp.id)}>x remove</a>
+                <a onClick={() => this.props.updateComponent(comp.id, comp.source)}>u update</a>
                 <Connect stateMappings={comp.stateMappings} />
               </li>
             )
