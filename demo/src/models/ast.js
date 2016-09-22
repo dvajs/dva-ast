@@ -1,4 +1,4 @@
-import { call, put } from 'dva/effects';
+import { call, put, select } from 'dva/effects';
 import * as astService from '../services/ast';
 
 export default {
@@ -21,47 +21,37 @@ export default {
     *['ast/query']({ payload }) {
       try {
         const result = yield call(astService.query);
-        yield put({
-          type: 'ast/query/success',
-          payload: result.data,
-        });
+        yield put({ type: 'ast/query/success', payload: result.data });
       } catch (e) {
-        yield put({
-          type: 'ast/query/failure',
-          err: e,
-        });
+        yield put({ type: 'ast/query/failure', err: e });
       }
+    },
+    *['ast/component/create']({ payload }) {
+    },
+    *['ast/component/remove']({ payload }) {
+    },
+    *['ast/component/update']({ payload }) {
     },
     *['ast/saveReducer']({ payload }) {
-      try {
-        const result = yield call(astService.saveReducer, payload);
-      } catch (e) {
-        console.error(e);
-      }
     },
+    *['ast/removeReducer']({ payload }) {
+    },
+    *['ast/addReducer']({ payload }) {
+    }
   },
   reducers: {
     ['ast/query'](state) {
       return { ...state, loading: true };
     },
     ['ast/query/success'](state, action) {
-      return { ...state, loading: false, ...action.payload };
+      return {
+        ...state,
+        loading: false,
+        ...action.payload,
+      };
     },
     ['ast/query/failure'](state, action) {
       return { ...state, loading: false, ...action.payload };
-    },
-
-    ['ast/saveReducer'](state, action) {
-      let { reducers } = state;
-      const index = reducers.findIndex(el => el.id === action.payload.id);
-      if (index > -1) {
-        reducers = [
-          ...reducers.splice(0, index - 1),
-          action.payload,
-          ...reducers.splice(index + 1, reducers.length),
-        ]
-      }
-      return { ...state, reducers };
     },
   },
 

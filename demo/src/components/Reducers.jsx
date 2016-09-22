@@ -9,15 +9,33 @@ class Reducers extends React.Component {
       payload: reducer,
     })
   }
+  removeReducer(reducer) {
+    this.props.dispatch({
+      type: 'ast/removeReducer',
+      payload: reducer,
+    });
+  }
+  addReducer(reducer) {
+    this.props.dispatch({
+      type: 'ast/addReducer',
+      payload: {
+        actionType: `newReducer_${Math.random()}`,
+        modelId: 'users',
+        source: 'function(state) { return {...state, hello: 1}}',
+      }
+    });
+  }
   render() {
     const { reducers } = this.props;
     return (
       <div>
+        <button onClick={ () => this.addReducer() }>add a reducer</button>
         <ul>
           {
             reducers.map(reducer =>
               <li key={reducer.id}>
                 {reducer.actionType} from {reducer.modelId}
+                <button onClick={ () => this.removeReducer(reducer) }>delete</button>
                 <Editor
                   source={reducer.source}
                   onChange={(val) => this.saveReducer({ ...reducer, source: val })}
