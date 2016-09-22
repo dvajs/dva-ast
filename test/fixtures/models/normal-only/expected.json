@@ -1,6 +1,7 @@
 [
   {
     "dispatches": [
+      "add",
       "add"
     ],
     "reducers": [
@@ -24,9 +25,21 @@
         ]
       }
     ],
+    "subscriptions": [
+      {
+        "id": "count_subscription_undefined",
+        "source": "function({ dispatch }) {\n  dispatch({ type: 'add' });\n}",
+        "filePath": "./models/normal/actual.js",
+        "modelId": "count",
+        "dispatches": [
+          "add"
+        ],
+        "name": "setup"
+      }
+    ],
     "model": {
       "id": "count",
-      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    reducers: {\n      add(state) { return state + 1; },\n    },\n\n    effects: {\n      *addAsync(_, { call, select, put }) {\n        yield put({ type: 'add' });\n      },\n    }\n}",
+      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    reducers: {\n      add(state) { return state + 1; },\n    },\n\n    effects: {\n      *addAsync(_, { call, select, put }) {\n        yield put({ type: 'add' });\n      },\n    },\n\n    subscriptions: {\n      setup({ dispatch }) {\n        dispatch({ type: 'add' });\n      },\n    }\n}",
       "filePath": "./models/normal/actual.js",
       "namespace": "count",
       "state": {},
@@ -36,7 +49,9 @@
       "reducers": [
         "count_reducer_add"
       ],
-      "subscriptions": []
+      "subscriptions": [
+        "count_subscription_setup"
+      ]
     }
   }
 ]

@@ -12,7 +12,6 @@ export default function (j) {
     actionType: '',
   });
 
-
   const parse = ({ filePath, node, modelId, actionType }) => {
     if (node.type !== 'FunctionExpression') {
       console.error('unsupported type of dva model reducers');

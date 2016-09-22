@@ -85,6 +85,7 @@ describe('dva-ast', () => {
         });
         results.push({
           ...result,
+          subscriptions: normalize(result.subscriptions),
           reducers: normalize(result.reducers),
           effects: normalize(result.effects),
           model: normalize(result.model),

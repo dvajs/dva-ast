@@ -13,7 +13,6 @@ export default function (j) {
     dispatches: [],
   });
 
-
   const parse = ({ filePath, node, modelId, effectId, actionType }) => {
     if (node.type !== 'FunctionExpression') {
       console.error('unsupported type of dva model effects');

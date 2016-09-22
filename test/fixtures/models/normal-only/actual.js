@@ -10,4 +10,9 @@ export default {
       yield put({ type: 'add' });
     },
   },
+  subscriptions: {
+    setup({ dispatch }) {
+      dispatch({ type: 'add' });
+    },
+  },
 };
