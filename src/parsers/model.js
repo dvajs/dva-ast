@@ -1,5 +1,5 @@
 import assert from 'assert';
-import uniq from 'lodash.uniq';
+import { uniqDispatches } from '../utils/utils';
 
 import infrastructureUtils from '../utils/InfrastructureUtils';
 import modelReducerParserFactory from './model-reducers';
@@ -175,7 +175,7 @@ export default function (j) {
     });
 
     parseResult.model = model;
-    parseResult.dispatches = uniq(parseResult.dispatches);
+    parseResult.dispatches = uniqDispatches(parseResult.dispatches);
     return parseResult;
   };
 

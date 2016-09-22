@@ -1,4 +1,4 @@
-import uniq from 'lodash.uniq';
+import { uniqDispatches } from '../utils/utils';
 import infrastructureUtils from '../utils/InfrastructureUtils';
 
 export default function (j) {
@@ -29,9 +29,12 @@ export default function (j) {
     effect.id = effectId;
 
     u.findActionTypeByCallee(node, 'put', (action) => {
-      effect.dispatches.push(action);
+      effect.dispatches.push({
+        type: action,
+        modelId,
+      });
     });
-    effect.dispatches = uniq(effect.dispatches);
+    effect.dispatches = uniqDispatches(effect.dispatches);
     return effect;
   };
 

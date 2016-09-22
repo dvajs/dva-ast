@@ -1,7 +1,10 @@
 [
   {
     "dispatches": [
-      "add"
+      {
+        "type": "add",
+        "modelId": "count"
+      }
     ],
     "reducers": [
       {
@@ -20,7 +23,10 @@
         "modelId": "count",
         "actionType": "addAsync",
         "dispatches": [
-          "add"
+          {
+            "type": "add",
+            "modelId": "count"
+          }
         ]
       }
     ],
@@ -31,7 +37,10 @@
         "filePath": "./models/normal/actual.js",
         "modelId": "count",
         "dispatches": [
-          "add"
+          {
+            "type": "add",
+            "modelId": "count"
+          }
         ],
         "name": "setup"
       }
