@@ -1,3 +1,4 @@
+import uniq from 'lodash.uniq';
 import infrastructureUtils from '../utils/InfrastructureUtils';
 
 export default function (j) {
@@ -28,6 +29,7 @@ export default function (j) {
     u.findActionTypeByCallee(node, 'dispatch', (action) => {
       subscription.dispatches.push(action);
     });
+    subscription.dispatches = uniq(subscription.dispatches);
     return subscription;
   };
 

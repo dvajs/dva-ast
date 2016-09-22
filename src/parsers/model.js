@@ -1,4 +1,5 @@
 import assert from 'assert';
+import uniq from 'lodash.uniq';
 
 import infrastructureUtils from '../utils/InfrastructureUtils';
 import modelReducerParserFactory from './model-reducers';
@@ -144,7 +145,7 @@ export default function (j) {
       if (propertyName === 'namespace') {
         // skip
       } else if (propertyName === 'state') {
-        model.state = u.recursiveParse(node);
+        model.state = u.recursiveParse(n.value);
       } else if (propertyName === 'subscriptions') {
         const {
           subscriptions,
@@ -174,6 +175,7 @@ export default function (j) {
     });
 
     parseResult.model = model;
+    parseResult.dispatches = uniq(parseResult.dispatches);
     return parseResult;
   };
 
