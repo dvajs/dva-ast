@@ -23,14 +23,6 @@ export default function (j) {
     subscriptions: [],
   });
 
-  const parseState = (node) => {
-    if (node.type !== 'ObjectExpression') {
-      console.error('unsupported type of dva model state');
-      return {};
-    }
-    return u.recursiveParse(node);
-  };
-
   const parseSubscriptions = (node, filePath, modelId) => {
     assert(node.type === 'ObjectExpression', 'Subscriptions should be ObjectExpression');
 
@@ -152,7 +144,7 @@ export default function (j) {
       if (propertyName === 'namespace') {
         // skip
       } else if (propertyName === 'state') {
-        model.state = parseState(n.value);
+        model.state = u.recursiveParse(node);
       } else if (propertyName === 'subscriptions') {
         const {
           subscriptions,
@@ -177,7 +169,7 @@ export default function (j) {
         model.reducers = reducerIds;
         parseResult.reducers = reducers;
       } else {
-        throw new Error(`unrecognized property of dva model: ${propertyName}`);
+        throw new Error(`Unrecognized property of dva model: ${propertyName}`);
       }
     });
 
