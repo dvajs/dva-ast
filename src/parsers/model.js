@@ -1,3 +1,6 @@
+import assert from 'assert';
+import { uniqDispatches } from '../utils/utils';
+
 import infrastructureUtils from '../utils/InfrastructureUtils';
 import modelReducerParserFactory from './model-reducers';
 import modelEffectParserFactory from './model-effects';
@@ -11,7 +14,6 @@ export default function (j) {
 
   const getModelBoilerplate = () => ({
     id: '',                 // namespace
-    node: null,             // ast node
     source: null,           // source code
     filePath: '',
     namespace: '',
@@ -21,55 +23,48 @@ export default function (j) {
     subscriptions: [],
   });
 
-
-  const parseState = (node) => {
-    if (node.type !== 'ObjectExpression') {
-      console.error('unsupported type of dva model state');
-      return {};
-    }
-    return u.recursiveParse(node);
-  };
   const parseSubscriptions = (node, filePath, modelId) => {
-    if (node.type !== 'ArrayExpression') {
-      console.error('unsupported type of dva model subscriptions');
-      return null;
-    }
+    assert(node.type === 'ObjectExpression', 'Subscriptions should be ObjectExpression');
+
     let dispatches = [];
-    const subscriptions = node.elements.map(
-      (n, index) => {
-        const s = modelSubscriptionParser.parse({
-          node: n,
-          jscodeshift: j,
-          filePath,
-          modelId,
-          index,
-        });
-        dispatches = dispatches.concat(s.dispatches);
-        return s;
+    const subIds = [];
+
+    const subscriptions = node.properties.map(curr => {
+      const subName = u.getPropertyKeyName(curr.key);
+      const subId = `${modelId}_subscription_${subName}`;
+
+      const sub = modelSubscriptionParser.parse({
+        node: curr.value,
+        jscodeshift: j,
+        filePath,
+        modelId,
+        subscriptionName: subName,
+      });
+
+      subIds.push(subId);
+      if (sub.dispatches.length) {
+        dispatches = [...dispatches, ...sub.dispatches];
       }
-    );
+
+      return sub;
+    });
+
     return {
       subscriptions,
       dispatches,
+      subscriptionIds: subIds,
     };
   };
+
   const parseEffects = (node, filePath, modelId) => {
-    if (node.type !== 'ObjectExpression') {
-      console.error('unsupported type of dva model effects');
-      return {};
-    }
+    assert(node.type === 'ObjectExpression', 'Effects should be ObjectExpression');
+
     let dispatches = [];
     const effectIds = [];
-    const effects = node.properties.map(curr => {
-      let actionType;
-      if (curr.key.type === 'Literal') {
-        actionType = curr.key.value;
-      } else if (curr.key.type === 'Identifier') {
-        actionType = curr.key.name;
-      }
 
+    const effects = node.properties.map(curr => {
+      let actionType = u.getPropertyKeyName(curr.key);
       const effectId = `${modelId}_effect_${actionType}`;
-      effectIds.push(effectId);
 
       const effect = modelEffectParser.parse({
         node: curr.value,
@@ -80,9 +75,11 @@ export default function (j) {
         effectId,
       });
 
+      effectIds.push(effectId);
       if (effect.dispatches.length) {
         dispatches = dispatches.concat(effect.dispatches);
       }
+
       return effect;
     });
 
@@ -92,21 +89,13 @@ export default function (j) {
       dispatches,
     };
   };
+
   const parseReducers = (node, filePath, modelId) => {
-    if (node.type !== 'ObjectExpression') {
-      console.error('unsupported type of dva model reducers');
-      return {};
-    }
+    assert(node.type === 'ObjectExpression', 'Reducers should be ObjectExpression');
 
     const reducerIds = [];
     const reducers = node.properties.map(curr => {
-      let actionType;
-      if (curr.key.type === 'Literal') {
-        actionType = curr.key.value;
-      } else if (curr.key.type === 'Identifier') {
-        actionType = curr.key.name;
-      }
-
+      let actionType = u.getPropertyKeyName(curr.key);
       const reducerId = `${modelId}_reducer_${actionType}`;
       reducerIds.push(reducerId);
       return modelReducerParser.parse({
@@ -144,21 +133,25 @@ export default function (j) {
     };
 
     const model = getModelBoilerplate();
-    model.node = nodePath.node;
-    model.source = u.getSourceFromNode(model.node);
+    model.source = u.getSourceFromNode(nodePath.node);
     model.filePath = filePath;
-    model.namespace = getModelNamespace(model.node);
+    model.namespace = getModelNamespace(nodePath.node);
     model.id = model.namespace;
 
-    model.node.properties.forEach(n => {
+    nodePath.node.properties.forEach(n => {
       const propertyName = u.getPropertyKeyName(n.key);
       if (propertyName === 'namespace') {
         // skip
       } else if (propertyName === 'state') {
-        model.state = parseState(n.value);
+        model.state = u.recursiveParse(n.value);
       } else if (propertyName === 'subscriptions') {
-        const { subscriptions, dispatches } = parseSubscriptions(n.value, model.filePath, model.id);
-        model.subscriptions = subscriptions;
+        const {
+          subscriptions,
+          dispatches,
+          subscriptionIds
+        } = parseSubscriptions(n.value, model.filePath, model.id);
+        model.subscriptions = subscriptionIds;
+        parseResult.subscriptions = subscriptions;
         parseResult.dispatches = parseResult.dispatches.concat(dispatches);
       } else if (propertyName === 'effects') {
         const {
@@ -175,11 +168,12 @@ export default function (j) {
         model.reducers = reducerIds;
         parseResult.reducers = reducers;
       } else {
-        console.error('unrecognized property of dva model: %s', propertyName);
+        throw new Error(`Unrecognized property of dva model: ${propertyName}`);
       }
     });
 
     parseResult.model = model;
+    parseResult.dispatches = uniqDispatches(parseResult.dispatches);
     return parseResult;
   };
 

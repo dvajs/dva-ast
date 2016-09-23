@@ -9,7 +9,6 @@ export default function (j) {
     id: '',                 // filePath + componentName
     filePath: '',
     componentName: '',
-    node: null,             // ast node
     source: null,           // source code
     stateMappings: {},      // stateMapping objects
     dispatchMappings: [],   // TODO: mapDispatchToProps
@@ -69,10 +68,10 @@ export default function (j) {
 
   const parse = ({ filePath, nodePath, root }) => {
     const component = getComponentBoilerplate();
-    component.node = nodePath.node;
-    component.source = u.getSourceFromNode(component.node);
+    const node = nodePath.node;
+    component.source = u.getSourceFromNode(node);
     component.filePath = filePath;
-    component.componentName = getComponentName(component.node);
+    component.componentName = getComponentName(node);
     component.id = `${component.filePath}_${component.componentName}`;
 
     const dispatchMap = getDispatches(root);

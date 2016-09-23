@@ -1,7 +1,10 @@
 [
   {
     "dispatches": [
-      "add"
+      {
+        "type": "add",
+        "modelId": "count"
+      }
     ],
     "reducers": [
       {
@@ -15,28 +18,48 @@
     "effects": [
       {
         "id": "count_effect_addAsync",
-        "source": "function*(_, { call, select, put }) {\n  yield put({ type: 'add' });\n}",
+        "source": "function*(_, { call, select, put }) {\n  yield put({ type: 'add' });\n  yield put({ type: 'add' });\n}",
         "filePath": "./models/normal/actual.js",
         "modelId": "count",
         "actionType": "addAsync",
         "dispatches": [
-          "add"
+          {
+            "type": "add",
+            "modelId": "count"
+          }
         ]
+      }
+    ],
+    "subscriptions": [
+      {
+        "id": "count_subscription_undefined",
+        "source": "function({ dispatch }) {\n  dispatch({ type: 'add' });\n}",
+        "filePath": "./models/normal/actual.js",
+        "modelId": "count",
+        "dispatches": [
+          {
+            "type": "add",
+            "modelId": "count"
+          }
+        ],
+        "name": "setup"
       }
     ],
     "model": {
       "id": "count",
-      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    reducers: {\n      add(state) { return state + 1; },\n    },\n\n    effects: {\n      *addAsync(_, { call, select, put }) {\n        yield put({ type: 'add' });\n      },\n    }\n}",
+      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    reducers: {\n      add(state) { return state + 1; },\n    },\n\n    effects: {\n      *addAsync(_, { call, select, put }) {\n        yield put({ type: 'add' });\n        yield put({ type: 'add' });\n      },\n    },\n\n    subscriptions: {\n      setup({ dispatch }) {\n        dispatch({ type: 'add' });\n      },\n    }\n}",
       "filePath": "./models/normal/actual.js",
       "namespace": "count",
-      "state": {},
+      "state": 0,
       "effects": [
         "count_effect_addAsync"
       ],
       "reducers": [
         "count_reducer_add"
       ],
-      "subscriptions": []
+      "subscriptions": [
+        "count_subscription_setup"
+      ]
     }
   }
 ]

@@ -8,6 +8,12 @@ export default {
   effects: {
     *addAsync(_, { call, select, put }) {
       yield put({ type: 'add' });
+      yield put({ type: 'add' });
+    },
+  },
+  subscriptions: {
+    setup({ dispatch }) {
+      dispatch({ type: 'add' });
     },
   },
 };

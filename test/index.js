@@ -8,6 +8,7 @@ import modelParserFactory from '../src/parsers/model';
 import routeParserFactory from '../src/parsers/route';
 import getInfrastructureUtils from '../src/utils/InfrastructureUtils';
 import getReactUtils from '../src/utils/ReactUtils';
+import parse from '../src/index';
 
 const fixtures = join(__dirname, 'fixtures');
 const infrastructureUtils = getInfrastructureUtils(j);
@@ -50,10 +51,7 @@ function normalize(obj) {
   }
   if (obj.id) obj.id = obj.id.replace(fixtures, '.').replace(/-only/, '');
   if (obj.filePath) obj.filePath = obj.filePath.replace(fixtures, '.').replace(/-only/, '');
-  return Object.keys(obj).reduce((memo, key) => {
-    if (key !== 'node') memo[key] = obj[key];
-    return memo;
-  }, {});
+  return obj;
 }
 
 describe('dva-ast', () => {
@@ -85,6 +83,7 @@ describe('dva-ast', () => {
         });
         results.push({
           ...result,
+          subscriptions: normalize(result.subscriptions),
           reducers: normalize(result.reducers),
           effects: normalize(result.effects),
           model: normalize(result.model),
@@ -107,5 +106,29 @@ describe('dva-ast', () => {
       });
       return results;
     },
+  });
+
+  // projects
+  describe('projects', () => {
+    return;
+    for (const project of readdirSync(join(fixtures, 'projects'))) {
+      const isOnly = /-only$/.test(project);
+      const testFn = isOnly ? it.only.bind(it) : it;
+      testFn(`should work with project ${project}`, (done) => {
+        const dir = join(fixtures, 'projects', project);
+        const sourcePath = join(dir, 'actual');
+        const options = {
+          babel: true,
+          silent: true,
+        };
+        parse({ sourcePath, options }).then(result => {
+          result = JSON.stringify(result, null, 2);
+          if (isOnly) console.log(result);
+          const expected = readFileSync(join(dir, 'expected.json'), 'utf-8');
+          expect(result).toEqual(expected);
+          done();
+        });
+      });
+    }
   });
 });

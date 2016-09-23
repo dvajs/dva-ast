@@ -4,7 +4,6 @@ export default function (j) {
   const u = infrastructureUtils(j);
 
   const getRouteBoilerplate = () => ({
-    node: null,             // ast node
     source: null,           // source code
     filePath: '',
     tree: null,
@@ -67,11 +66,11 @@ export default function (j) {
 
   const parse = ({ filePath, nodePath }) => {
     const route = getRouteBoilerplate();
+    const node = nodePath.__paths[0].node;
     route.filePath = filePath;
-    route.node = nodePath.__paths[0].node;
-    route.source = u.getSourceFromNode(route.node);
+    route.source = u.getSourceFromNode(node);
     try {
-      route.tree = getRouteTree(route.node);
+      route.tree = getRouteTree(node);
     } catch (e) {
       console.error(e);
     }

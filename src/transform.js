@@ -33,9 +33,9 @@ export default function transformer(file, api) {
         nodePath: path, jscodeshift: j, filePath: file.path,
       });
       transformInfo.models.push(model);
-      transformInfo.effects = transformInfo.effects.concat(effects);
-      transformInfo.reducers = transformInfo.reducers.concat(reducers);
-      transformInfo.dispatches = transformInfo.dispatches.concat(dispatches);
+      transformInfo.effects = transformInfo.effects.concat(effects || []);
+      transformInfo.reducers = transformInfo.reducers.concat(reducers || []);
+      transformInfo.dispatches = transformInfo.dispatches.concat(dispatches || []);
     });
   }
 
