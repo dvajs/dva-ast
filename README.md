@@ -1,7 +1,7 @@
 # dva-ast
 dva static analysis based on javascript ast
 
-## usage
+## Usage
 
 ```javascript
 require('dva-ast')
@@ -13,7 +13,7 @@ require('dva-ast')
   });
 ```
 
-## demo
+## Demo
 
 > for details you could run the demo.
 
