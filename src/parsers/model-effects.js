@@ -6,7 +6,6 @@ export default function (j) {
 
   const getEffectBoilerplate = () => ({
     id: '',                 // model's id + actionType
-    node: null,             // ast node
     source: null,           // source code
     filePath: '',
     modelId: '',
@@ -22,8 +21,7 @@ export default function (j) {
 
     const effect = getEffectBoilerplate();
     effect.filePath = filePath;
-    effect.node = node;
-    effect.source = u.getSourceFromNode(effect.node);
+    effect.source = u.getSourceFromNode(node);
     effect.modelId = modelId;
     effect.actionType = actionType;
     effect.id = effectId;

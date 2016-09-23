@@ -14,7 +14,6 @@ export default function (j) {
 
   const getModelBoilerplate = () => ({
     id: '',                 // namespace
-    node: null,             // ast node
     source: null,           // source code
     filePath: '',
     namespace: '',
@@ -134,13 +133,12 @@ export default function (j) {
     };
 
     const model = getModelBoilerplate();
-    model.node = nodePath.node;
-    model.source = u.getSourceFromNode(model.node);
+    model.source = u.getSourceFromNode(nodePath.node);
     model.filePath = filePath;
-    model.namespace = getModelNamespace(model.node);
+    model.namespace = getModelNamespace(nodePath.node);
     model.id = model.namespace;
 
-    model.node.properties.forEach(n => {
+    nodePath.node.properties.forEach(n => {
       const propertyName = u.getPropertyKeyName(n.key);
       if (propertyName === 'namespace') {
         // skip

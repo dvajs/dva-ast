@@ -6,7 +6,6 @@ export default function (j) {
 
   const getSubscriptionBoilerplate = () => ({
     id: '',                 // `${modelId}_subscription_${index}`
-    node: null,             // ast node
     source: null,           // source code
     filePath: '',
     modelId: '',
@@ -21,8 +20,7 @@ export default function (j) {
 
     const subscription = getSubscriptionBoilerplate();
     subscription.filePath = filePath;
-    subscription.node = node;
-    subscription.source = u.getSourceFromNode(subscription.node);
+    subscription.source = u.getSourceFromNode(node);
     subscription.modelId = modelId;
     subscription.name = subscriptionName;
     subscription.id = `${modelId}_subscription_${index}`;

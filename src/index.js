@@ -1,13 +1,13 @@
 import jscodeshift from 'dva-jscodeshift/dist/core';
 import recast from 'recast';
 import Runner from 'dva-jscodeshift/dist/Runner';
-import path from 'path';
-import fs from 'fs';
+import { join } from 'path';
+import { statSync, readFile, writeFile } from 'fs';
 
 export default function parse({ sourcePath, options }) {
   const ignoreConfig = [];
   try {
-    const exists = fs.statSync(`${sourcePath}/.gitignore`).isFile();
+    const exists = statSync(`${sourcePath}/.gitignore`).isFile();
     if (exists) {
       ignoreConfig.push(`${sourcePath}/.gitignore`);
     }
@@ -16,23 +16,26 @@ export default function parse({ sourcePath, options }) {
   }
 
   return Runner.run(
-    path.resolve(path.join(__dirname, './transform.js')),
+    join(__dirname, 'transform.js'),
     [sourcePath],
     {
       extensions: 'js,jsx',
       dry: true,
       ignoreConfig,
       ...options,
-    },
+    }
   ).then(({ transformInfo }) => {
-    const result = transformInfo.reduce((prev, curr) => ({
-      models: curr.models.concat(prev.models),
-      effects: curr.effects.concat(prev.effects),
-      reducers: curr.reducers.concat(prev.reducers),
-      components: curr.components.concat(prev.components),
-      dispatches: curr.dispatches.concat(prev.dispatches),
-      routes: curr.routes.concat(prev.routes),
-    }), {
+    const result = transformInfo.reduce((prev, curr) => {
+      //console.log('curr', curr.dispatches);
+      return {
+        models: curr.models.concat(prev.models),
+        effects: curr.effects.concat(prev.effects),
+        reducers: curr.reducers.concat(prev.reducers),
+        components: curr.components.concat(prev.components),
+        dispatches: curr.dispatches.concat(prev.dispatches),
+        routes: (curr.routes || []).concat(prev.routes),
+      };
+    }, {
       models: [],
       effects: [],
       reducers: [],
@@ -44,17 +47,17 @@ export default function parse({ sourcePath, options }) {
     // TODO:
     // 转化 models 和 dispatches 里的 action 为 String
 
-    const d = {};
-    result.dispatches.forEach(actionType => {
-      d[actionType] = true;
-    });
-    result.dispatches = Object.keys(d);
+    //const d = {};
+    //result.dispatches.forEach(actionType => {
+    //  d[actionType] = true;
+    //});
+    //result.dispatches = Object.keys(d);
     return result;
   });
 }
 
 export function saveReducer(reducer, cb) {
-  fs.readFile(reducer.filePath, (err, source) => {
+  readFile(reducer.filePath, (err, source) => {
     if (err) {
       cb({ err });
       return;
@@ -76,7 +79,7 @@ export function saveReducer(reducer, cb) {
       return;
     }
 
-    fs.writeFile(reducer.filePath, out.toSource(), (writeError) => {
+    writeFile(reducer.filePath, out.toSource(), (writeError) => {
       if (writeError) {
         cb({ err: writeError });
         return;
