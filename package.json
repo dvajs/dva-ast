@@ -1,7 +1,7 @@
 {
   "name": "dva-ast",
   "version": "0.1.4",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Chris Fan <chris.fan.dev@gmail.com>",
   "main": "./lib/index.js",
   "files": [
