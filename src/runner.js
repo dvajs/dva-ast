@@ -7,7 +7,7 @@ import transform from './transform';
 
 export default function runner(sourcePath, options) {
 
-  const files = globSync('**/*.js', {
+  const files = globSync('**/*.js?(x)', {
     cwd: sourcePath,
     dot: false,
     ignore: ['node_modules/*']

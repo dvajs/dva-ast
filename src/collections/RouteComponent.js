@@ -105,12 +105,12 @@ const methods = {
 
   getRouteComponentInfo(root) {
     return this.simpleMap(path => {
-      const ret = {
+      return {
         name: j(path).getFirstComponentName(),
+        source: root.toSource(),
         stateMappings: root.findConnects().findMapFunction().getModulesFromMapFunction(),
         dispatches: j(path).findDispatchCalls().getActionTypeFromCall(),
       };
-      return ret;
     });
   },
 
@@ -163,7 +163,7 @@ const methods = {
   },
 
   getActionTypeFromCall() {
-    return this.simpleMap(path => {
+    const ret = this.simpleMap(path => {
       const node = path.node;
       assert(
         node.type === 'CallExpression',
@@ -174,9 +174,16 @@ const methods = {
         `getActionType: dispatch should be called with 1 argument, but got ${node.arguments.length}`
       );
       const obj = node.arguments[0];
+      
+      // TODO: Support dispatch(routerRedux.push({''}));
+      if (j.CallExpression.check(obj)) {
+        console.warn(`[WARN] getActionTypeFromCall: don't support dispatch with CallExpression yet`);
+        return null;
+      }
+
       assert(
         obj.type === 'ObjectExpression',
-        `getActionType: dispatch should be called with Object`
+        `getActionType: dispatch should be called with Object, but got ${node.type}`
       );
       const value = utils.getObjectProperty(obj, 'type');
       if (value.type === 'Literal') {
@@ -188,10 +195,13 @@ const methods = {
         } else {
           return UNRESOLVED_IDENTIFIER;
         }
+      } else if (value.type === 'TemplateLiteral') {
+        console.warn(`[WARN] getActionTypeFromCall: unsupported action type ${value.type}`);
       } else {
         throw new Error(`getActionTypeFromCall: unsupported action type ${value.type}`);
       }
     });
+    return ret.filter(item => !!item);
   },
 
 };

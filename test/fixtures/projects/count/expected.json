@@ -117,6 +117,7 @@
   "routeComponents": [
     {
       "name": "App",
+      "source": "import React from 'react';\n\nfunction App({ dispatch }) {\n  function handleClick() {\n    dispatch({\n      type: 'count/add',\n    });\n    dispatch({\n      type: 'app/showLoading',\n    });\n  }\n  return (\n    <div>App</div>\n  );\n}\n\nexport default App;\n",
       "stateMappings": [],
       "dispatches": [
         "count/add",
