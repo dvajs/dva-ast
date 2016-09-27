@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "dva-jscodeshift": "^0.1.0",
+    "fs-extra": "^0.30.0",
     "glob": "^7.1.0",
+    "handlebars": "^4.0.5",
     "jscodeshift": "^0.3.28",
     "lodash.flatten": "^4.4.0",
     "lodash.once": "^4.1.1",
