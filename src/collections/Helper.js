@@ -1,4 +1,4 @@
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import once from 'lodash.once';
 
 const methods = {

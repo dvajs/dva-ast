@@ -1,4 +1,4 @@
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 
 const code = `
 function d() {}

@@ -1,4 +1,4 @@
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import * as utils from '../src/utils/index';
 
 describe('utils', () => {

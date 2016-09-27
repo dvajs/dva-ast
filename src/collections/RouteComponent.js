@@ -1,5 +1,5 @@
-import j from 'dva-jscodeshift';
-import Collection from 'dva-jscodeshift/dist/Collection';
+import j from 'jscodeshift';
+import Collection from 'jscodeshift/dist/Collection';
 import once from 'lodash.once';
 import flatten from 'lodash.flatten';
 import assert from 'assert';

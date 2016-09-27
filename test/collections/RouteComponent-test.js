@@ -1,5 +1,5 @@
 import expect from 'expect';
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import RouteComponent, { UNRESOLVED_IDENTIFIER } from '../../src/collections/RouteComponent';
 
 // Register methods.

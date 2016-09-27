@@ -1,5 +1,5 @@
-import j from 'dva-jscodeshift';
-//import Runner from 'dva-jscodeshift/dist/Runner';
+import j from 'jscodeshift';
+//import Runner from 'jscodeshift/dist/Runner';
 import { join } from 'path';
 import { sync as globSync } from 'glob';
 import { readFileSync } from 'fs';

@@ -1,4 +1,4 @@
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import once from 'lodash.once';
 import assert from 'assert';
 import Helper from './Helper';

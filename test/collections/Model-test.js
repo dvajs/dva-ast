@@ -1,5 +1,5 @@
 import expect from 'expect';
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import Model from '../../src/collections/Model';
 
 // Register methods.

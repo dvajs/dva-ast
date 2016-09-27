@@ -1,4 +1,4 @@
-import j from 'dva-jscodeshift';
+import j from 'jscodeshift';
 import assert from 'assert';
 
 export function getObjectProperty(node, key) {
