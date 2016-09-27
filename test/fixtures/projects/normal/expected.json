@@ -1,105 +1,129 @@
 {
-  "models": [
-    {
-      "id": "count",
-      "source": "{\n    namespace: 'count',\n    state: 0,\n\n    subscriptions: {\n      setup({ dispatch }) {\n        dispatch({ type: 'app/showLoading' });\n        dispatch({ type: 'addAsync' });\n      },\n    },\n\n    reducers: {\n      add(state) {\n        return state + 1;\n      },\n    },\n\n    effects: {\n      *addAsync(_, { put, call, select }) {\n        yield put({ add });\n      },\n    }\n}",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/models/count.js",
-      "namespace": "count",
-      "state": 0,
-      "effects": [
-        "count_effect_addAsync"
+  "models": {
+    "data": [
+      {
+        "reducers": [
+          "Reducer^^models/app.js^^showLoading"
+        ],
+        "effects": [],
+        "subscriptions": [],
+        "namespace": "app",
+        "state": {
+          "loading": false
+        },
+        "id": "Model^^models/app.js^^app",
+        "filePath": "models/app.js"
+      },
+      {
+        "reducers": [
+          "Reducer^^models/count.js^^add"
+        ],
+        "effects": [
+          "Effect^^models/count.js^^addAsync"
+        ],
+        "subscriptions": [
+          "Subscription^^models/count.js^^setup"
+        ],
+        "namespace": "count",
+        "state": 0,
+        "id": "Model^^models/count.js^^count",
+        "filePath": "models/count.js"
+      }
+    ],
+    "reducerByIds": {
+      "Reducer^^models/app.js^^showLoading": {
+        "name": "showLoading",
+        "source": "function(state) {\n  return { ...state, loading: true, };\n}",
+        "id": "Reducer^^models/app.js^^showLoading",
+        "filePath": "models/app.js"
+      },
+      "Reducer^^models/count.js^^add": {
+        "name": "add",
+        "source": "function(state) {\n  return state + 1;\n}",
+        "id": "Reducer^^models/count.js^^add",
+        "filePath": "models/count.js"
+      }
+    },
+    "effectByIds": {
+      "Effect^^models/count.js^^addAsync": {
+        "name": "addAsync",
+        "source": "function*(_, { put, call, select }) {\n  yield put({ type: 'add' });\n}",
+        "dispatches": [
+          "count/add"
+        ],
+        "id": "Effect^^models/count.js^^addAsync",
+        "filePath": "models/count.js"
+      }
+    },
+    "subscriptionByIds": {
+      "Subscription^^models/count.js^^setup": {
+        "name": "setup",
+        "source": "function({ dispatch }) {\n  dispatch({ type: 'app/showLoading' });\n  dispatch({ type: 'addAsync' });\n}",
+        "dispatches": [
+          "app/showLoading",
+          "count/addAsync"
+        ],
+        "id": "Subscription^^models/count.js^^setup",
+        "filePath": "models/count.js"
+      }
+    }
+  },
+  "router": {
+    "type": "Router",
+    "attributes": {
+      "history": "history"
+    },
+    "id": "Router-root",
+    "children": [
+      {
+        "type": "Route",
+        "attributes": {
+          "component": "App"
+        },
+        "id": "Route-parentId_Router-root",
+        "children": []
+      }
+    ],
+    "filePath": "router.js"
+  },
+  "dispatches": {
+    "app/showLoading": {
+      "input": [
+        "Subscription^^models/count.js^^setup",
+        "RouteComponent^^routes/App.js^^App"
       ],
-      "reducers": [
-        "count_reducer_add"
-      ],
-      "subscriptions": [
-        "count_subscription_setup"
+      "output": [
+        "Reducer^^models/app.js^^showLoading"
       ]
     },
-    {
-      "id": "app",
-      "source": "{\n    namespace: 'app',\n\n    state: {\n      loading: false,\n    },\n\n    reducers: {\n      showLoading(state) {\n        return { ...state, loading: true, };\n      },\n    }\n}",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/models/app.js",
-      "namespace": "app",
-      "state": {
-        "loading": false
-      },
-      "effects": [],
-      "reducers": [
-        "app_reducer_showLoading"
+    "count/add": {
+      "input": [
+        "Effect^^models/count.js^^addAsync",
+        "RouteComponent^^routes/App.js^^App"
       ],
-      "subscriptions": []
-    }
-  ],
-  "effects": [
-    {
-      "id": "count_effect_addAsync",
-      "source": "function*(_, { put, call, select }) {\n  yield put({ add });\n}",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/models/count.js",
-      "modelId": "count",
-      "actionType": "addAsync",
-      "dispatches": []
-    }
-  ],
-  "reducers": [
-    {
-      "id": "count_reducer_add",
-      "source": "function(state) {\n  return state + 1;\n}",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/models/count.js",
-      "modelId": "count",
-      "actionType": "add"
+      "output": [
+        "Reducer^^models/count.js^^add"
+      ]
     },
-    {
-      "id": "app_reducer_showLoading",
-      "source": "function(state) {\n  return { ...state, loading: true, };\n}",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/models/app.js",
-      "modelId": "app",
-      "actionType": "showLoading"
+    "count/addAsync": {
+      "input": [
+        "Subscription^^models/count.js^^setup"
+      ],
+      "output": [
+        "Effect^^models/count.js^^addAsync"
+      ]
     }
-  ],
-  "components": [
+  },
+  "routeComponents": [
     {
-      "id": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/routes/App.js_App",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/routes/App.js",
-      "componentName": "App",
-      "source": "function App({ dispatch }) {\n  function handleClick() {\n    dispatch({\n      type: 'count/add',\n    });\n    dispatch({\n      type: 'app/showLoading',\n    });\n  }\n  return (\n    <div>App</div>\n  );\n}",
-      "stateMappings": {},
-      "dispatchMappings": [],
+      "name": "App",
+      "stateMappings": [],
       "dispatches": [
         "count/add",
         "app/showLoading"
-      ]
-    }
-  ],
-  "dispatches": [
-    "count/add",
-    "app/showLoading",
-    {
-      "type": "app/showLoading",
-      "modelId": "count"
-    },
-    {
-      "type": "addAsync",
-      "modelId": "count"
-    }
-  ],
-  "routes": [
-    {
-      "source": "<Router history={ history }>\n  <Route component={App} />\n</Router>",
-      "filePath": "/Users/chencheng/Documents/Work/Misc/dva-ast/test/fixtures/projects/normal-only/actual/router.js",
-      "tree": {
-        "type": "Router",
-        "children": [
-          {
-            "type": "Route",
-            "children": [],
-            "component": "App",
-            "id": "Route-parentId_Router-root"
-          }
-        ],
-        "history": "history",
-        "id": "Router-root"
-      }
+      ],
+      "filePath": "routes/App.js",
+      "id": "RouteComponent^^routes/App.js^^App"
     }
   ]
 }

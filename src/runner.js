@@ -19,12 +19,11 @@ export default function runner(sourcePath, options) {
     const file = { path, source };
     const api = { jscodeshift: j };
     const info = transform(file, api);
-    console.log(path);
-    console.log(info);
-    console.log('----------------');
+    //console.log(path);
+    //console.log(info);
+    //console.log('----------------');
     ret = combine(ret, info);
   });
-  console.log(JSON.stringify(ret, null, 2));
   return ret;
 
   //return Runner.run(

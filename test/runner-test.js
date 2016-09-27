@@ -1,21 +1,16 @@
 import runner from '../src/runner';
 import { join } from 'path';
 import expect from 'expect';
+import { readFileSync } from 'fs';
 
 const fixtures = join(__dirname, 'fixtures');
 
 describe('runner', () => {
 
-  it.only('normal', (done) => {
-
-    runner(join(fixtures, 'projects/normal/actual'));
-
-    //runner(join(fixtures, 'projects/normal/actual'), {
-    //  babel: true,
-    //  silent: false,
-    //}).then(result => {
-    //  expect(1).toEqual(1);
-    //  done();
-    //});
+  it('normal', () => {
+    const result = runner(join(fixtures, 'projects/normal/actual'));
+    const expected = readFileSync(join(fixtures, 'projects/normal/expected.json'), 'utf-8');
+    expect(JSON.stringify(result, null, 2))
+      .toEqual(expected);
   });
 });

@@ -30,7 +30,7 @@ describe('collections/RouteComponent', () => {
     });
     it('throw error for unsupported types', () => {
       expect(_ => {
-        j(`const a;`).getFirstComponentName();
+        j(`const a = 1;`).getFirstComponentName();
       }).toThrow(/getFirstComponentName: unsupported node.type/);
     });
   });
@@ -41,7 +41,7 @@ describe('collections/RouteComponent', () => {
       expect(j(`props.dispatch()`).findDispatchCalls().size()).toEqual(1);
     });
     it('put', () => {
-      expect(j(`yield put()`).findDispatchCalls().size()).toEqual(1);
+      expect(j(`function* a() { yield put() }`).findDispatchCalls().size()).toEqual(1);
     });
   });
 
@@ -50,7 +50,7 @@ describe('collections/RouteComponent', () => {
       expect(j(`dispatch({type:'a'})`).find(j.CallExpression).getActionTypeFromCall()).toEqual(['a']);
     });
     it('put', () => {
-      expect(j(`yield put({type:'a'})`).find(j.CallExpression).getActionTypeFromCall()).toEqual(['a']);
+      expect(j(`function* a() { yield put({type:'a'}) }`).find(j.CallExpression).getActionTypeFromCall()).toEqual(['a']);
     });
     it('multiple dispatch', () => {
       expect(j(`dispatch({type:'a'});put({type:'b'})`).find(j.CallExpression).getActionTypeFromCall()).toEqual(['a', 'b']);
@@ -74,13 +74,13 @@ describe('collections/RouteComponent', () => {
       expect(j(fns.get()).toSource()).toEqual('function(state) { return { c: state.count }; }');
     });
     it('ArrowFunctionExpression', () => {
-      const fns = j(`connect(state => ({ c: state.count }) })(App)`)
+      const fns = j(`connect(state => ({ c: state.count }) )(App)`)
         .find(j.CallExpression).at(1)
         .findMapFunction();
       expect(j(fns.get()).toSource()).toEqual('state => ({ c: state.count })');
     });
     it('ref VariableDeclaration', () => {
-      const fns = j(`const m = function(state) { return { c: state.count }; } connect(m)(App)`)
+      const fns = j(`const m = function(state) { return { c: state.count }; }; connect(m)(App)`)
         .find(j.CallExpression).at(1)
         .findMapFunction();
       expect(j(fns.get()).toSource()).toEqual('function(state) { return { c: state.count }; }');
