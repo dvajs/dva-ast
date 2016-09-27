@@ -1,36 +1,10 @@
 # dva-ast
-dva static analysis based on javascript ast
 
-## Usage
+[![NPM version](https://img.shields.io/npm/v/dva-ast.svg?style=flat)](https://npmjs.org/package/dva-ast)
+[![Build Status](https://img.shields.io/travis/dvajs/dva-ast.svg?style=flat)](https://travis-ci.org/dvajs/dva-ast)
 
-```javascript
-require('dva-ast')
-  .parse({
-    sourcePath: './demo/user-dashboard',  // your dva project path
-  })
-  .then(({ transformInfo }) => {
-    console.log(transformInfo);
-  });
-```
+dva static analysis based on javascript ast.
 
-## Demo
+## LICENSE
 
-> for details you could run the demo.
-
-```bash
-npm run demo
-```
-
-```bash
-cd ./demo
-```
-
-```bash
-npm i
-```
-
-```bash
-npm start
-```
-
-open `localhost:8989`
+MIT

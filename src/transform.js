@@ -1,58 +1,116 @@
-import getReactUtils from './utils/ReactUtils';
-import getInfrastructureUtils from './utils/InfrastructureUtils';
-import componentParserFactory from './parsers/component';
-import modelParserFactory from './parsers/model';
-import routeParserFactory from './parsers/route';
+import uniq from 'lodash.uniq';
+import RouteComponent from './collections/RouteComponent';
+import Model from './collections/Model';
+import Router from './collections/Router';
 
-export default function transformer(file, api) {
+const ID_SEP = '^^';
+
+export default function transform(file, api) {
   const j = api.jscodeshift;
-  let root;
-  try {
-    root = j(file.source);
-  } catch (e) {
-    console.error(`Error in ${file.path}: ${e}`);
-  }
+  RouteComponent.register(j);
+  Model.register(j);
+  Router.register(j);
 
-  const ReactUtils = getReactUtils(j);
-  const infrastructureUtils = getInfrastructureUtils(j);
-  const modelParser = modelParserFactory(j);
-  const componentParser = componentParserFactory(j);
-  const routeParser = routeParserFactory(j);
-  const transformInfo = {
-    dispatches: [],
-    components: [],
-    models: [],
-    effects: [],
-    reducers: [],
-    routes: [],
+  const root = j(file.source);
+
+  const ret = {
+    models: root.findModels().getModelInfo(),
+    router: root.findRouters().getRouterInfo(),
+    routeComponents: root.findRouteComponents().getRouteComponentInfo(root),
   };
 
-  if (file.path.indexOf('models') > -1) {
-    infrastructureUtils.findModels(root, (path) => {
-      const { model, effects, reducers, dispatches } = modelParser.parse({
-        nodePath: path, jscodeshift: j, filePath: file.path,
+  // Only one router.
+  if (ret.router && ret.router.length) {
+    ret.router = ret.router[0];
+  } else {
+    ret.router = null;
+  }
+
+  return normalizeResult(ret, file.path);
+};
+
+export function normalizeResult(obj, filePath) {
+  const dispatches = {};
+
+  function addDispatch(names, { input: newInput, output: newOutput }) {
+    for (let name of names) {
+      const dispatch = dispatches[name] || {};
+      const input = dispatch.input || [];
+      const output = dispatch.output || [];
+      dispatches[name] = {
+        input: uniq(input.concat(newInput || [])),
+        output: uniq(output.concat(newOutput || [])),
+      };
+    }
+  }
+
+  if (obj.routeComponents) {
+    for (let rc of obj.routeComponents) {
+      rc.filePath = filePath;
+      rc.id = `RouteComponent${ID_SEP}${filePath}${ID_SEP}${rc.name}`;
+      addDispatch(rc.dispatches, { input: [rc.id] });
+    }
+  }
+
+  if (obj.models) {
+    const reducerByIds = {};
+    const effectByIds = {};
+    const subscriptionByIds = {};
+
+    for (let model of obj.models) {
+      const reducerNames = model.reducers.map(item => item.name);
+      const effectNames = model.effects.map(item => item.name);
+      const actionMap = reducerNames.concat(effectNames)
+        .reduce((memo, key) => {
+          memo[key] = true;
+          return memo;
+        }, {});
+
+      const namespace = model.namespace;
+      model.id = `Model${ID_SEP}${filePath}${ID_SEP}${model.namespace}`;
+      model.filePath = filePath;
+
+      model.reducers = model.reducers.map(reducer => {
+        const id = `Reducer${ID_SEP}${filePath}${ID_SEP}${reducer.name}`;
+        addDispatch([`${namespace}/${reducer.name}`], { output: [id] });
+        reducerByIds[id] = { ...reducer, id, filePath };
+        return id;
       });
-      transformInfo.models.push(model);
-      transformInfo.effects = transformInfo.effects.concat(effects || []);
-      transformInfo.reducers = transformInfo.reducers.concat(reducers || []);
-      transformInfo.dispatches = transformInfo.dispatches.concat(dispatches || []);
-    });
+      model.effects = model.effects.map(effect => {
+        const id = `Effect${ID_SEP}${filePath}${ID_SEP}${effect.name}`;
+        addDispatch([`${namespace}/${effect.name}`], { output: [id] });
+        const dispatches = effect.dispatches.map(name => {
+          const newName = actionMap[name] ? `${model.namespace}/${name}` : name;
+          addDispatch([newName], { input: [id] });
+          return newName;
+        });
+        effectByIds[id] = { ...effect, id, filePath, dispatches };
+        return id;
+      });
+      model.subscriptions = model.subscriptions.map(subscription => {
+        const id = `Subscription${ID_SEP}${filePath}${ID_SEP}${subscription.name}`;
+        const dispatches = subscription.dispatches.map(name => {
+          const newName = actionMap[name] ? `${model.namespace}/${name}` : name;
+          addDispatch([newName], { input: [id] });
+          return newName;
+        });
+        subscriptionByIds[id] = { ...subscription, id, filePath, dispatches };
+        return id;
+      });
+    }
+    obj.models = {
+      data: obj.models,
+      reducerByIds,
+      effectByIds,
+      subscriptionByIds,
+    };
   }
 
-  if (ReactUtils.hasReact(root)) {
-    infrastructureUtils.findComponents(root, (path) => {
-      const component = componentParser.parse({ nodePath: path, filePath: file.path, root });
-      transformInfo.components.push(component);
-      transformInfo.dispatches = transformInfo.dispatches.concat(component.dispatches);
-    });
+  if (obj.router) {
+    obj.router.filePath = filePath;
   }
 
-  if (ReactUtils.hasModule(root, 'dva/router')) {
-    infrastructureUtils.findRoutes(root, path => {
-      const route = routeParser.parse({ nodePath: path, filePath: file.path });
-      transformInfo.routes.push(route);
-    });
-  }
+  obj.dispatches = dispatches;
 
-  return [null, transformInfo];
+  return obj;
 }

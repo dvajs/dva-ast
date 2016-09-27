@@ -1,0 +1,335 @@
+{
+  "models": {
+    "data": [
+      {
+        "reducers": [
+          "Reducer^^src/models/users.js^^showLoading",
+          "Reducer^^src/models/users.js^^createSuccess",
+          "Reducer^^src/models/users.js^^deleteSuccess",
+          "Reducer^^src/models/users.js^^updateSuccess",
+          "Reducer^^src/models/users.js^^querySuccess",
+          "Reducer^^src/models/users.js^^showModal",
+          "Reducer^^src/models/users.js^^hideModal"
+        ],
+        "effects": [
+          "Effect^^src/models/users.js^^query",
+          "Effect^^src/models/users.js^^delete",
+          "Effect^^src/models/users.js^^create",
+          "Effect^^src/models/users.js^^update"
+        ],
+        "subscriptions": [
+          "Subscription^^src/models/users.js^^setup"
+        ],
+        "namespace": "users",
+        "state": {
+          "list": [],
+          "loading": false,
+          "total": null,
+          "current": 1,
+          "currentItem": {},
+          "modalVisible": false,
+          "modalType": "create"
+        },
+        "id": "Model^^src/models/users.js^^users",
+        "filePath": "src/models/users.js"
+      }
+    ],
+    "reducerByIds": {
+      "Reducer^^src/models/users.js^^showLoading": {
+        "name": "showLoading",
+        "source": "function(state) {\n  return { ...state, loading: true };\n}",
+        "id": "Reducer^^src/models/users.js^^showLoading",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^createSuccess": {
+        "name": "createSuccess",
+        "source": "function(state, action) {\n  const newUser = action.payload;\n  return { ...state, list: [newUser, ...state.list], loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^createSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^deleteSuccess": {
+        "name": "deleteSuccess",
+        "source": "function(state, action) {\n  const id = action.payload;\n  const newList = state.list.filter(user => user.id !== id);\n  return { ...state, list: newList, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^deleteSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^updateSuccess": {
+        "name": "updateSuccess",
+        "source": "function(state, action) {\n  const updateUser = action.payload;\n  const newList = state.list.map(user => {\n    if (user.id === updateUser.id) {\n      return { ...user, ...updateUser };\n    }\n    return user;\n  });\n  return { ...state, list: newList, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^updateSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^querySuccess": {
+        "name": "querySuccess",
+        "source": "function(state, action) {\n  return { ...state, ...action.payload, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^querySuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^showModal": {
+        "name": "showModal",
+        "source": "function(state, action) {\n  return { ...state, ...action.payload, modalVisible: true };\n}",
+        "id": "Reducer^^src/models/users.js^^showModal",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^hideModal": {
+        "name": "hideModal",
+        "source": "function(state) {\n  return { ...state, modalVisible: false };\n}",
+        "id": "Reducer^^src/models/users.js^^hideModal",
+        "filePath": "src/models/users.js"
+      }
+    },
+    "effectByIds": {
+      "Effect^^src/models/users.js^^query": {
+        "name": "query",
+        "source": "function*({ payload }, { select, call, put }) {\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(query, parse(payload));\n  if (data) {\n    yield put({\n      type: 'querySuccess',\n      payload: {\n        list: data.data,\n        total: data.page.total,\n        current: data.page.current\n      }\n    });\n  }\n}",
+        "dispatches": [
+          "users/showLoading",
+          "users/querySuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^query",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^delete": {
+        "name": "delete",
+        "source": "function*({ payload }, { call, put }) {\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(remove, { id: payload });\n  if (data && data.success) {\n    yield put({\n      type: 'deleteSuccess',\n      payload\n    });\n  }\n}",
+        "dispatches": [
+          "users/showLoading",
+          "users/deleteSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^delete",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^create": {
+        "name": "create",
+        "source": "function*({ payload }, { call, put }) {\n  yield put({ type: 'hideModal' });\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(create, payload);\n  if (data && data.success) {\n    yield put({\n      type: 'createSuccess',\n      payload\n    });\n  }\n}",
+        "dispatches": [
+          "users/hideModal",
+          "users/showLoading",
+          "users/createSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^create",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^update": {
+        "name": "update",
+        "source": "function*({ payload }, { select, call, put }) {\n  yield put({ type: 'hideModal' });\n  yield put({ type: 'showLoading' });\n  const id = yield select(({ users }) => users.currentItem.id);\n  const newUser = { ...payload, id };\n  const { data } = yield call(update, newUser);\n  if (data && data.success) {\n    yield put({\n      type: 'updateSuccess',\n      payload: newUser\n    });\n  }\n}",
+        "dispatches": [
+          "users/hideModal",
+          "users/showLoading",
+          "users/updateSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^update",
+        "filePath": "src/models/users.js"
+      }
+    },
+    "subscriptionByIds": {
+      "Subscription^^src/models/users.js^^setup": {
+        "name": "setup",
+        "source": "function({ dispatch, history }) {\n  history.listen(location => {\n    if (location.pathname === '/users') {\n      dispatch({\n        type: 'query',\n        payload: location.query\n      });\n    }\n  });\n}",
+        "dispatches": [
+          "users/query"
+        ],
+        "id": "Subscription^^src/models/users.js^^setup",
+        "filePath": "src/models/users.js"
+      }
+    }
+  },
+  "router": {
+    "type": "Router",
+    "attributes": {
+      "history": "history"
+    },
+    "id": "Router-root",
+    "children": [
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "/",
+          "component": "HomePage"
+        },
+        "absolutePath": "/",
+        "id": "Route-/",
+        "children": []
+      },
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "/users",
+          "component": "Users"
+        },
+        "absolutePath": "/users",
+        "id": "Route-/users",
+        "children": []
+      },
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "*",
+          "component": "NotFound"
+        },
+        "absolutePath": "/*",
+        "id": "Route-/*",
+        "children": []
+      }
+    ],
+    "filePath": "src/router.js"
+  },
+  "dispatches": {
+    "users/showLoading": {
+      "input": [
+        "Effect^^src/models/users.js^^query",
+        "Effect^^src/models/users.js^^delete",
+        "Effect^^src/models/users.js^^create",
+        "Effect^^src/models/users.js^^update"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^showLoading"
+      ]
+    },
+    "users/createSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^create"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^createSuccess"
+      ]
+    },
+    "users/deleteSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^delete"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^deleteSuccess"
+      ]
+    },
+    "users/updateSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^update"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^updateSuccess"
+      ]
+    },
+    "users/querySuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^query"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^querySuccess"
+      ]
+    },
+    "users/showModal": {
+      "input": [
+        "RouteComponent^^src/routes/Users.jsx^^Users"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^showModal"
+      ]
+    },
+    "users/hideModal": {
+      "input": [
+        "Effect^^src/models/users.js^^create",
+        "Effect^^src/models/users.js^^update",
+        "RouteComponent^^src/routes/Users.jsx^^Users"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^hideModal"
+      ]
+    },
+    "users/query": {
+      "input": [
+        "Subscription^^src/models/users.js^^setup",
+        "RouteComponent^^src/routes/Users.jsx^^Users"
+      ],
+      "output": [
+        "Effect^^src/models/users.js^^query"
+      ]
+    },
+    "users/delete": {
+      "input": [
+        "RouteComponent^^src/routes/Users.jsx^^Users"
+      ],
+      "output": [
+        "Effect^^src/models/users.js^^delete"
+      ]
+    },
+    "users/create": {
+      "input": [],
+      "output": [
+        "Effect^^src/models/users.js^^create"
+      ]
+    },
+    "users/update": {
+      "input": [],
+      "output": [
+        "Effect^^src/models/users.js^^update"
+      ]
+    }
+  },
+  "routeComponents": [
+    {
+      "name": "Header",
+      "source": "import React, { PropTypes } from 'react';\nimport { Menu, Icon } from 'antd';\nimport { Link } from 'dva/router';\n\nfunction getMenuKeyFromUrl(pathname) {\n  let key = '';\n  try {\n    key = pathname.match(/\\/([^\\/]*)/i)[1];\n    /* eslint no-empty:0 */\n  } catch (e) {}\n  return key;\n}\n\nfunction Header({ location }) {\n  return (\n    <Menu\n      selectedKeys={[getMenuKeyFromUrl(location.pathname)]}\n      mode=\"horizontal\"\n      theme=\"dark\"\n    >\n      <Menu.Item key=\"users\">\n        <Link to=\"/users\"><Icon type=\"bars\" />Users</Link>\n      </Menu.Item>\n      <Menu.Item key=\"home\">\n        <Link to=\"/\"><Icon type=\"home\" />Home</Link>\n      </Menu.Item>\n      <Menu.Item key=\"404\">\n        <Link to=\"/page-you-dont-know\"><Icon type=\"frown-circle\" />404</Link>\n      </Menu.Item>\n      <Menu.Item key=\"antd\">\n        <a href=\"https://github.com/dvajs/dva\" target=\"_blank\">dva</a>\n      </Menu.Item>\n    </Menu>\n  );\n}\n\nHeader.propTypes = {\n  location: PropTypes.object,\n};\n\nexport default Header;\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/components/MainLayout/Header.jsx",
+      "id": "RouteComponent^^src/components/MainLayout/Header.jsx^^Header"
+    },
+    {
+      "name": "MainLayout",
+      "source": "import React, { PropTypes } from 'react';\nimport styles from './MainLayout.less';\nimport Header from './Header';\n\nfunction MainLayout({ children, location }) {\n  return (\n    <div className={styles.normal}>\n      <Header location={location} />\n      <div className={styles.content}>\n        <div className={styles.main}>\n          {children}\n        </div>\n      </div>\n    </div>\n  );\n}\n\nMainLayout.propTypes = {\n  children: PropTypes.element.isRequired,\n  location: PropTypes.object,\n};\n\nexport default MainLayout;\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/components/MainLayout/MainLayout.jsx",
+      "id": "RouteComponent^^src/components/MainLayout/MainLayout.jsx^^MainLayout"
+    },
+    {
+      "name": "UserList",
+      "source": "import React, { PropTypes } from 'react';\nimport { Table, Popconfirm, Pagination } from 'antd';\n\nfunction UserList({\n  total, current, loading, dataSource,\n  onPageChange,\n  onDeleteItem,\n  onEditItem\n  }) {\n  const columns = [{\n    title: '姓名',\n    dataIndex: 'name',\n    key: 'name',\n    render: (text) => <a href=\"#\">{text}</a>\n  }, {\n    title: '年龄',\n    dataIndex: 'age',\n    key: 'age'\n  }, {\n    title: '住址',\n    dataIndex: 'address',\n    key: 'address'\n  }, {\n    title: '操作',\n    key: 'operation',\n    render: (text, record) => (\n      <p>\n        <a onClick={() => onEditItem(record)}>编辑</a>\n        &nbsp;\n        <Popconfirm title=\"确定要删除吗？\" onConfirm={() => onDeleteItem(record.id)}>\n          <a>删除</a>\n        </Popconfirm>\n      </p>\n    )\n  }];\n\n  return (\n    <div>\n      <Table\n        columns={columns}\n        dataSource={dataSource}\n        loading={loading}\n        rowKey={record => record.id}\n        pagination={false}\n      />\n      <Pagination\n        className=\"ant-table-pagination\"\n        total={total}\n        current={current}\n        pageSize={10}\n        onChange={onPageChange}\n      />\n    </div>\n  );\n}\n\nUserList.propTypes = {\n  onPageChange: PropTypes.func,\n  onDeleteItem: PropTypes.func,\n  onEditItem: PropTypes.func,\n  dataSource: PropTypes.array,\n  loading: PropTypes.any,\n  total: PropTypes.any,\n  current: PropTypes.any\n};\n\nexport default UserList;\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/components/Users/UserList.jsx",
+      "id": "RouteComponent^^src/components/Users/UserList.jsx^^UserList"
+    },
+    {
+      "name": "UserModal",
+      "source": "import React, { PropTypes } from 'react';\nimport { Form, Input, Modal } from 'antd';\nconst FormItem = Form.Item;\n\nconst formItemLayout = {\n  labelCol: {\n    span: 6\n  },\n  wrapperCol: {\n    span: 14\n  }\n};\n\nfunction UserModal({\n  visible, form, item = {},\n  onOk,\n  onCancel,\n  }) {\n\n  const { getFieldProps } = form;\n\n  function handleOk() {\n    form.validateFields((errors) => {\n      if (errors) {\n        return;\n      }\n\n      const data = { ...form.getFieldsValue(), key: item.key };\n\n      onOk(data);\n    });\n  }\n\n  function checkNumber(rule, value, callback) {\n    if (!/^[\\d]{1,2}$/.test(value)) {\n      callback(new Error('年龄不合法'));\n    } else {\n      callback();\n    }\n  }\n\n  function getFieldPropsBy(key, message, validator) {\n    const rules = [{\n      required: true,\n      message,\n      validator\n    }];\n    return getFieldProps(key, { rules, initialValue: item[key] || '' });\n  }\n\n  const modalOpts = {\n    title: '修改用户',\n    visible,\n    onOk: handleOk,\n    onCancel,\n  };\n\n  return (\n    <Modal {...modalOpts}>\n      <Form horizontal>\n        <FormItem\n          label=\"姓名：\"\n          hasFeedback\n          {...formItemLayout}\n        >\n          <Input {...getFieldPropsBy('name', '不能为空')} />\n        </FormItem>\n        <FormItem\n          label=\"年龄：\"\n          hasFeedback\n          {...formItemLayout}\n        >\n          <Input type=\"age\" {...getFieldPropsBy('age', '年龄不合法', checkNumber)} />\n        </FormItem>\n        <FormItem\n          label=\"住址：\"\n          hasFeedback\n          {...formItemLayout}\n        >\n          <Input type=\"address\" {...getFieldPropsBy('address', '不能为空')} />\n        </FormItem>\n      </Form>\n    </Modal>\n  );\n}\n\nUserModal.propTypes = {\n  visible: PropTypes.any,\n  form: PropTypes.object,\n  item: PropTypes.object,\n  onOk: PropTypes.func,\n  onCancel: PropTypes.func,\n};\n\nexport default Form.create()(UserModal);\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/components/Users/UserModal.jsx",
+      "id": "RouteComponent^^src/components/Users/UserModal.jsx^^UserModal"
+    },
+    {
+      "name": "UserSearch",
+      "source": "import React, { PropTypes } from 'react';\nimport { Form, Input, Button, Select } from 'antd';\nimport styles from './UserSearch.less';\n\nfunction UserSearch({\n  form, field, keyword,\n  onSearch,\n  onAdd\n  }) {\n  const { getFieldProps, validateFields, getFieldsValue } = form;\n\n  function handleSubmit(e) {\n    e.preventDefault();\n    validateFields((errors) => {\n      if (!!errors) {\n        return;\n      }\n\n      onSearch(getFieldsValue());\n    });\n  }\n\n  return (\n    <div className={styles.normal}>\n      <div className={styles.search}>\n        <Form inline onSubmit={handleSubmit}>\n          <Form.Item>\n            <Select {...getFieldProps('field', { initialValue: field || 'name' })}>\n              <Select.Option value=\"name\">名字</Select.Option>\n              <Select.Option value=\"address\">地址</Select.Option>\n            </Select>\n          </Form.Item>\n          <Form.Item\n            hasFeedback\n          >\n            <Input\n              {...getFieldProps('keyword', {\n                initialValue: keyword || ''\n              })}\n            />\n          </Form.Item>\n          <Button style={{ marginRight: '10px' }} type=\"primary\" htmlType=\"submit\">搜索</Button>\n        </Form>\n      </div>\n      <div className={styles.create}>\n        <Button type=\"ghost\" onClick={onAdd}>添加</Button>\n      </div>\n    </div>\n  );\n}\n\nUserSearch.propTypes = {\n  form: PropTypes.object.isRequired,\n  onSearch: PropTypes.func,\n  onAdd: PropTypes.func,\n  field: PropTypes.string,\n  keyword: PropTypes.string\n};\n\nexport default Form.create()(UserSearch);\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/components/Users/UserSearch.jsx",
+      "id": "RouteComponent^^src/components/Users/UserSearch.jsx^^UserSearch"
+    },
+    {
+      "name": "HomePage",
+      "source": "import React from 'react';\nimport { Link } from 'dva/router';\nimport styles from './HomePage.less';\n\nfunction HomePage() {\n  return (\n    <div className={styles.normal}>\n      <h1>Hello Antd.</h1>\n      <hr />\n      <ul className={styles.list}>\n        <li>You can go to <Link to=\"/users\">/users</Link></li>\n      </ul>\n    </div>\n  );\n}\n\nHomePage.propTypes = {\n};\n\nexport default HomePage;\n",
+      "stateMappings": [],
+      "dispatches": [],
+      "filePath": "src/routes/HomePage.jsx",
+      "id": "RouteComponent^^src/routes/HomePage.jsx^^HomePage"
+    },
+    {
+      "name": "Users",
+      "source": "import React, { PropTypes } from 'react';\nimport { routerRedux } from 'dva/router';\nimport { connect } from 'dva';\nimport MainLayout from '../components/MainLayout/MainLayout';\nimport styles from './Users.less';\nimport UserList from '../components/Users/UserList';\nimport UserSearch from '../components/Users/UserSearch';\nimport UserModal from '../components/Users/UserModal';\n\nfunction Users({ location, dispatch, users }) {\n  const {\n    loading, list, total, current,\n    currentItem, modalVisible, modalType\n    } = users;\n\n  const { field, keyword } = location.query;\n\n  const userModalProps = {\n    item: modalType === 'create' ? {} : currentItem,\n    type: modalType,\n    visible: modalVisible,\n    onOk(data) {\n      dispatch({\n        type: `users/${modalType}`,\n        payload: data\n      });\n    },\n    onCancel() {\n      dispatch({\n        type: 'users/hideModal'\n      });\n    },\n  };\n\n  const userListProps = {\n    dataSource: list,\n    loading,\n    total,\n    current,\n    onPageChange(page) {\n      dispatch(routerRedux.push({\n        pathname: '/users',\n        query: { page },\n      }));\n    },\n    onDeleteItem(id) {\n      dispatch({\n        type: 'users/delete',\n        payload: id\n      });\n    },\n    onEditItem(item) {\n      dispatch({\n        type: 'users/showModal',\n        payload: {\n          modalType: 'update',\n          currentItem: item,\n        }\n      });\n    }\n  };\n\n  const userSearchProps = {\n    field,\n    keyword,\n    onSearch(fieldsValue) {\n      dispatch({\n        type: 'users/query',\n        payload: fieldsValue\n      });\n    },\n    onAdd() {\n      dispatch({\n        type: 'users/showModal',\n        payload: {\n          modalType: 'create'\n        }\n      });\n    }\n  };\n\n\n  // 解决 Form.create initialValue 的问题\n  // 每次创建一个全新的组件, 而不做diff\n  // 如果你使用了redux, 请移步 http://react-component.github.io/form/examples/redux.html\n  const UserModalGen = () =>\n    <UserModal {...userModalProps} />;\n\n  return (\n    <MainLayout location={location}>\n      <div className={styles.normal}>\n        <UserSearch {...userSearchProps} />\n        <UserList {...userListProps} />\n        <UserModalGen />\n      </div>\n    </MainLayout>\n  );\n}\n\nUsers.propTypes = {\n  users: PropTypes.object,\n  location: PropTypes.object,\n  dispatch: PropTypes.func,\n};\n\nfunction mapStateToProps({ users }) {\n  return {users};\n}\n\nexport default connect(mapStateToProps)(Users);\n",
+      "stateMappings": [
+        "users"
+      ],
+      "dispatches": [
+        "users/hideModal",
+        "users/delete",
+        "users/showModal",
+        "users/query",
+        "users/showModal"
+      ],
+      "filePath": "src/routes/Users.jsx",
+      "id": "RouteComponent^^src/routes/Users.jsx^^Users"
+    }
+  ]
+}
