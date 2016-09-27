@@ -7,9 +7,16 @@ const fixtures = join(__dirname, 'fixtures');
 
 describe('runner', () => {
 
-  it('normal', () => {
-    const result = runner(join(fixtures, 'projects/normal/actual'));
-    const expected = readFileSync(join(fixtures, 'projects/normal/expected.json'), 'utf-8');
+  it('count', () => {
+    const result = runner(join(fixtures, 'projects/count/actual'));
+    const expected = readFileSync(join(fixtures, 'projects/count/expected.json'), 'utf-8');
+    expect(JSON.stringify(result, null, 2))
+      .toEqual(expected);
+  });
+
+  it('user-dashboard', () => {
+    const result = runner(join(fixtures, 'projects/user-dashboard/actual'));
+    const expected = readFileSync(join(fixtures, 'projects/user-dashboard/expected.json'), 'utf-8');
     expect(JSON.stringify(result, null, 2))
       .toEqual(expected);
   });

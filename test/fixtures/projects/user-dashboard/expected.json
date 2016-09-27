@@ -1,0 +1,264 @@
+{
+  "models": {
+    "data": [
+      {
+        "reducers": [
+          "Reducer^^src/models/users.js^^showLoading",
+          "Reducer^^src/models/users.js^^createSuccess",
+          "Reducer^^src/models/users.js^^deleteSuccess",
+          "Reducer^^src/models/users.js^^updateSuccess",
+          "Reducer^^src/models/users.js^^querySuccess",
+          "Reducer^^src/models/users.js^^showModal",
+          "Reducer^^src/models/users.js^^hideModal"
+        ],
+        "effects": [
+          "Effect^^src/models/users.js^^query",
+          "Effect^^src/models/users.js^^delete",
+          "Effect^^src/models/users.js^^create",
+          "Effect^^src/models/users.js^^update"
+        ],
+        "subscriptions": [
+          "Subscription^^src/models/users.js^^setup"
+        ],
+        "namespace": "users",
+        "state": {
+          "list": [],
+          "loading": false,
+          "total": null,
+          "current": 1,
+          "currentItem": {},
+          "modalVisible": false,
+          "modalType": "create"
+        },
+        "id": "Model^^src/models/users.js^^users",
+        "filePath": "src/models/users.js"
+      }
+    ],
+    "reducerByIds": {
+      "Reducer^^src/models/users.js^^showLoading": {
+        "name": "showLoading",
+        "source": "function(state) {\n  return { ...state, loading: true };\n}",
+        "id": "Reducer^^src/models/users.js^^showLoading",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^createSuccess": {
+        "name": "createSuccess",
+        "source": "function(state, action) {\n  const newUser = action.payload;\n  return { ...state, list: [newUser, ...state.list], loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^createSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^deleteSuccess": {
+        "name": "deleteSuccess",
+        "source": "function(state, action) {\n  const id = action.payload;\n  const newList = state.list.filter(user => user.id !== id);\n  return { ...state, list: newList, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^deleteSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^updateSuccess": {
+        "name": "updateSuccess",
+        "source": "function(state, action) {\n  const updateUser = action.payload;\n  const newList = state.list.map(user => {\n    if (user.id === updateUser.id) {\n      return { ...user, ...updateUser };\n    }\n    return user;\n  });\n  return { ...state, list: newList, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^updateSuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^querySuccess": {
+        "name": "querySuccess",
+        "source": "function(state, action) {\n  return { ...state, ...action.payload, loading: false };\n}",
+        "id": "Reducer^^src/models/users.js^^querySuccess",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^showModal": {
+        "name": "showModal",
+        "source": "function(state, action) {\n  return { ...state, ...action.payload, modalVisible: true };\n}",
+        "id": "Reducer^^src/models/users.js^^showModal",
+        "filePath": "src/models/users.js"
+      },
+      "Reducer^^src/models/users.js^^hideModal": {
+        "name": "hideModal",
+        "source": "function(state) {\n  return { ...state, modalVisible: false };\n}",
+        "id": "Reducer^^src/models/users.js^^hideModal",
+        "filePath": "src/models/users.js"
+      }
+    },
+    "effectByIds": {
+      "Effect^^src/models/users.js^^query": {
+        "name": "query",
+        "source": "function*({ payload }, { select, call, put }) {\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(query, parse(payload));\n  if (data) {\n    yield put({\n      type: 'querySuccess',\n      payload: {\n        list: data.data,\n        total: data.page.total,\n        current: data.page.current\n      }\n    });\n  }\n}",
+        "dispatches": [
+          "users/showLoading",
+          "users/querySuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^query",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^delete": {
+        "name": "delete",
+        "source": "function*({ payload }, { call, put }) {\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(remove, { id: payload });\n  if (data && data.success) {\n    yield put({\n      type: 'deleteSuccess',\n      payload\n    });\n  }\n}",
+        "dispatches": [
+          "users/showLoading",
+          "users/deleteSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^delete",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^create": {
+        "name": "create",
+        "source": "function*({ payload }, { call, put }) {\n  yield put({ type: 'hideModal' });\n  yield put({ type: 'showLoading' });\n  const { data } = yield call(create, payload);\n  if (data && data.success) {\n    yield put({\n      type: 'createSuccess',\n      payload\n    });\n  }\n}",
+        "dispatches": [
+          "users/hideModal",
+          "users/showLoading",
+          "users/createSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^create",
+        "filePath": "src/models/users.js"
+      },
+      "Effect^^src/models/users.js^^update": {
+        "name": "update",
+        "source": "function*({ payload }, { select, call, put }) {\n  yield put({ type: 'hideModal' });\n  yield put({ type: 'showLoading' });\n  const id = yield select(({ users }) => users.currentItem.id);\n  const newUser = { ...payload, id };\n  const { data } = yield call(update, newUser);\n  if (data && data.success) {\n    yield put({\n      type: 'updateSuccess',\n      payload: newUser\n    });\n  }\n}",
+        "dispatches": [
+          "users/hideModal",
+          "users/showLoading",
+          "users/updateSuccess"
+        ],
+        "id": "Effect^^src/models/users.js^^update",
+        "filePath": "src/models/users.js"
+      }
+    },
+    "subscriptionByIds": {
+      "Subscription^^src/models/users.js^^setup": {
+        "name": "setup",
+        "source": "function({ dispatch, history }) {\n  history.listen(location => {\n    if (location.pathname === '/users') {\n      dispatch({\n        type: 'query',\n        payload: location.query\n      });\n    }\n  });\n}",
+        "dispatches": [
+          "users/query"
+        ],
+        "id": "Subscription^^src/models/users.js^^setup",
+        "filePath": "src/models/users.js"
+      }
+    }
+  },
+  "router": {
+    "type": "Router",
+    "attributes": {
+      "history": "history"
+    },
+    "id": "Router-root",
+    "children": [
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "/",
+          "component": "HomePage"
+        },
+        "absolutePath": "/",
+        "id": "Route-/",
+        "children": []
+      },
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "/users",
+          "component": "Users"
+        },
+        "absolutePath": "/users",
+        "id": "Route-/users",
+        "children": []
+      },
+      {
+        "type": "Route",
+        "attributes": {
+          "path": "*",
+          "component": "NotFound"
+        },
+        "absolutePath": "/*",
+        "id": "Route-/*",
+        "children": []
+      }
+    ],
+    "filePath": "src/router.js"
+  },
+  "dispatches": {
+    "users/showLoading": {
+      "input": [
+        "Effect^^src/models/users.js^^query",
+        "Effect^^src/models/users.js^^delete",
+        "Effect^^src/models/users.js^^create",
+        "Effect^^src/models/users.js^^update"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^showLoading"
+      ]
+    },
+    "users/createSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^create"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^createSuccess"
+      ]
+    },
+    "users/deleteSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^delete"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^deleteSuccess"
+      ]
+    },
+    "users/updateSuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^update"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^updateSuccess"
+      ]
+    },
+    "users/querySuccess": {
+      "input": [
+        "Effect^^src/models/users.js^^query"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^querySuccess"
+      ]
+    },
+    "users/showModal": {
+      "input": [],
+      "output": [
+        "Reducer^^src/models/users.js^^showModal"
+      ]
+    },
+    "users/hideModal": {
+      "input": [
+        "Effect^^src/models/users.js^^create",
+        "Effect^^src/models/users.js^^update"
+      ],
+      "output": [
+        "Reducer^^src/models/users.js^^hideModal"
+      ]
+    },
+    "users/query": {
+      "input": [
+        "Subscription^^src/models/users.js^^setup"
+      ],
+      "output": [
+        "Effect^^src/models/users.js^^query"
+      ]
+    },
+    "users/delete": {
+      "input": [],
+      "output": [
+        "Effect^^src/models/users.js^^delete"
+      ]
+    },
+    "users/create": {
+      "input": [],
+      "output": [
+        "Effect^^src/models/users.js^^create"
+      ]
+    },
+    "users/update": {
+      "input": [],
+      "output": [
+        "Effect^^src/models/users.js^^update"
+      ]
+    }
+  },
+  "routeComponents": []
+}
