@@ -16,8 +16,12 @@ export function create(payload) {
   writeFile(filePath, source);
 }
 
+export function remove(payload) {
+  const filePath = join(payload.sourcePath, payload.filePath);
+  removeFile(filePath);
+}
+
 export function updateNamespace(payload) {
-  // TODO: 一个文件里只能有一个 model, 否则这里根据文件去找 model 就会有问题了
   assert(
     payload.namespace && payload.newNamespace,
     'api/models/updateNamespace: payload should have namespace and newNamespace'
@@ -36,17 +40,17 @@ export function addReducer(payload) {}
 
 export function updateReducer(payload) {}
 
-export function deleteReducer(payload) {}
+export function removeReducer(payload) {}
 
 export function addEffect(payload) {}
 
 export function updateEffect(payload) {}
 
-export function deleteEffect(payload) {}
+export function removeEffect(payload) {}
 
 export function addSubscription(payload) {}
 
 export function updateSubscription(payload) {}
 
-export function deleteSubscription(payload) {}
+export function removeSubscription(payload) {}
 
