@@ -9,7 +9,7 @@ describe('api/models', () => {
   const absFilePath = join(__dirname, filePath);
 
   afterEach(() => {
-    removeSync(dirname(absFilePath));
+     removeSync(dirname(absFilePath));
   });
 
   it('models.create', () => {
@@ -58,6 +58,27 @@ describe('api/models', () => {
     });
     expect(result).toEqual(
       {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":[],"namespace":"count","state":{"a":1},"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{}}
+    );
+  });
+
+  it('models.addReducer', () => {
+    const source = `
+      export default {
+        namespace: 'count',
+        state: 0,
+        reducers: {},
+      };
+    `;
+    outputFileSync(absFilePath, source, 'utf-8');
+    const result = api('models.addReducer', {
+      filePath,
+      sourcePath: __dirname,
+      namespace: 'count',
+      name: 'add',
+      source: '1',
+    });
+    expect(result).toEqual(
+      {"models":{"data":[{"reducers":["Reducer^^./tmp/a.js^^add"],"effects":[],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{"Reducer^^./tmp/a.js^^add":{"name":"add","source":"1","id":"Reducer^^./tmp/a.js^^add","filePath":"./tmp/a.js"}},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"count/add":{"input":[],"output":["Reducer^^./tmp/a.js^^add"]}}}
     );
   });
 });

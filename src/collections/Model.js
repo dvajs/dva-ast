@@ -50,19 +50,44 @@ const methods = {
     return this.forEach(path => {
       path.node.properties.forEach(prop => {
         if (j.Property.check(prop) && prop.key.name === 'state') {
-          // add `()` to object for preventing parse it as BlockStatement
-          if (source.charAt(0) === '{' && source.charAt(source.length - 1) === '}') {
-            source = `(${source})`;
-          }
-          const program = j(source).find(j.Program).get();
-          const node = program.node.body[0];
-          assert(
-            j.ExpressionStatement.check(node),
-            `updateState: body's first node should be ExpressionStatement, but got ${node.type}`
-          );
-          prop.value = node.expression;
+          prop.value = utils.getExpression(source);
         }
       });
+    });
+  },
+
+  addReducer(name, source) {
+    return this.forEach(path => {
+      let reducers = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === 'reducers') {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `addReducer: reducers should be ObjectExpression, but got ${prop.value.type}`
+          );
+          reducers = prop;
+        }
+      });
+
+      const defaultSource = `function(state) {\n  return state;\n}`;
+      let fn = utils.getExpression(source || defaultSource);
+
+      const reducer = j.property(
+        'init',
+        j.identifier(name),
+        fn
+      );
+
+      if (!reducers) {
+        reducers = j.property(
+          'init',
+          j.identifier('reducers'),
+          j.objectExpression([])
+        );
+        path.node.properties.push(reducers);
+      }
+
+      reducers.value.properties.push(reducer);
     });
   },
 

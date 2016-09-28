@@ -45,7 +45,17 @@ export function updateState(payload) {
   writeFile(filePath, root.toSource());
 }
 
-export function addReducer(payload) {}
+export function addReducer(payload) {
+  assert(
+    payload.namespace && payload.source && payload.name,
+    'api/models/addReducer: payload should have namespace, source and name'
+  );
+  const filePath = join(payload.sourcePath, payload.filePath);
+  const source = readFile(filePath);
+  const root = j(source);
+  root.findModels(payload.namespace).addReducer(payload.name, payload.source);
+  writeFile(filePath, root.toSource());
+}
 
 export function updateReducer(payload) {}
 

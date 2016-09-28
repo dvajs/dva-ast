@@ -48,4 +48,36 @@ describe('collections/Model', () => {
     });
   });
 
+  describe('addReducer', () => {
+    it('has reducers', () => {
+      const root = j(`({reducers:{}})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add');
+      expect(root.toSource()).toEqual(`({reducers:{
+  add: function(state) {
+    return state;
+  }
+}})`);
+    });
+    it('no reducers', () => {
+      const root = j(`({})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add');
+      expect(root.toSource()).toEqual(`(({
+  reducers: {
+    add: function(state) {
+      return state;
+    }
+  }
+}))`);
+    });
+    it('add with source', () => {
+      const root = j(`({})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add', 'function(state) { return state + 1; }');
+      expect(root.toSource()).toEqual(`(({
+  reducers: {
+    add: function(state) { return state + 1; }
+  }
+}))`);
+    });
+  });
+
 });

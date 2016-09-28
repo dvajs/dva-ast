@@ -1,6 +1,12 @@
 import j from 'jscodeshift';
 import assert from 'assert';
 
+export function getExpression(source) {
+  const program = j(`(${source})`).find(j.Program).get();
+  const node = program.node.body[0];
+  return node.expression;
+}
+
 export function getObjectProperty(node, key) {
   assert(
     node.type === 'ObjectExpression',
