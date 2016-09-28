@@ -45,29 +45,40 @@ export function updateState(payload) {
   writeFile(filePath, root.toSource());
 }
 
-export function addReducer(payload) {
+/**
+ * private
+ */
+function _add(type, payload) {
   assert(
     payload.namespace && payload.source && payload.name,
-    'api/models/addReducer: payload should have namespace, source and name'
+    `api/models/${type}: payload should have namespace, source and name`
   );
   const filePath = join(payload.sourcePath, payload.filePath);
   const source = readFile(filePath);
   const root = j(source);
-  root.findModels(payload.namespace).addReducer(payload.name, payload.source);
+  root.findModels(payload.namespace)[type](payload.name, payload.source);
   writeFile(filePath, root.toSource());
+}
+
+export function addReducer(payload) {
+  _add('addReducer', payload);
+}
+
+export function addEffect(payload) {
+  _add('addEffect', payload);
+}
+
+export function addSubscription(payload) {
+  _add('addSubscription', payload);
 }
 
 export function updateReducer(payload) {}
 
 export function removeReducer(payload) {}
 
-export function addEffect(payload) {}
-
 export function updateEffect(payload) {}
 
 export function removeEffect(payload) {}
-
-export function addSubscription(payload) {}
 
 export function updateSubscription(payload) {}
 

@@ -57,37 +57,57 @@ const methods = {
   },
 
   addReducer(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'reducers',
+      defaultSource: 'function(state) {\n  return state;\n}',
+    });
+  },
+
+  addEffect(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'effects',
+      defaultSource: '*function(action, { call, put, select }) {\n}',
+    });
+  },
+
+  addSubscription(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'subscriptions',
+      defaultSource: 'function({ dispatch, history }) {\n}',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _addModelItem(name, source, { itemsKey, defaultSource }) {
     return this.forEach(path => {
-      let reducers = null;
+      let items = null;
       path.node.properties.forEach(prop => {
-        if (j.Property.check(prop) && prop.key.name === 'reducers') {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
           assert(
             j.ObjectExpression.check(prop.value),
-            `addReducer: reducers should be ObjectExpression, but got ${prop.value.type}`
+            `addModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
           );
-          reducers = prop;
+          items = prop;
         }
       });
 
-      const defaultSource = `function(state) {\n  return state;\n}`;
-      let fn = utils.getExpression(source || defaultSource);
-
-      const reducer = j.property(
-        'init',
-        j.identifier(name),
-        fn
-      );
-
-      if (!reducers) {
-        reducers = j.property(
+      if (!items) {
+        items = j.property(
           'init',
-          j.identifier('reducers'),
+          j.identifier(itemsKey),
           j.objectExpression([])
         );
-        path.node.properties.push(reducers);
+        path.node.properties.push(items);
       }
 
-      reducers.value.properties.push(reducer);
+      const item = j.property(
+        'init',
+        j.identifier(name),
+        utils.getExpression(source || defaultSource)
+      );
+      items.value.properties.push(item);
     });
   },
 
