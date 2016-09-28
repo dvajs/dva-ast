@@ -11,6 +11,10 @@ export function getTemplate(name) {
   return Handlebars.compile(source);
 }
 
+export function readFile(filePath) {
+  return readFileSync(filePath, 'utf-8');
+}
+
 export function writeFile(filePath, source) {
   outputFileSync(filePath, source, 'utf-8');
 }

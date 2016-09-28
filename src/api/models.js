@@ -1,16 +1,34 @@
-import * as utils from './utils';
+import {
+  getTemplate,
+  writeFile,
+  readFile,
+  removeFile,
+} from './utils';
 import { join } from 'path';
 import assert from 'assert';
+import j from 'jscodeshift';
 
 export function create(payload) {
   assert(payload.namespace, 'api/models/create: payload should have namespace');
-  const template = utils.getTemplate('models.create');
+  const template = getTemplate('models.create');
   const source = template(payload);
   const filePath = join(payload.sourcePath, payload.filePath);
-  utils.writeFile(filePath, source);
+  writeFile(filePath, source);
 }
 
-export function updateNamespace(payload) {}
+export function updateNamespace(payload) {
+  // TODO: 一个文件里只能有一个 model, 否则这里根据文件去找 model 就会有问题了
+  assert(
+    payload.namespace && payload.newNamespace,
+    'api/models/updateNamespace: payload should have namespace and newNamespace'
+  );
+  const filePath = join(payload.sourcePath, payload.filePath);
+  const source = readFile(filePath);
+  const root = j(source);
+  root.findModels(payload.namespace).updateNamespace(payload.newNamespace);
+  const newSource = root.toSource();
+  writeFile(filePath, newSource);
+}
 
 export function updateState(payload) {}
 
