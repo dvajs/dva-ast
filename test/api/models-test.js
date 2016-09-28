@@ -120,4 +120,45 @@ describe('api/models', () => {
       {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":["Subscription^^./tmp/a.js^^setup"],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{"Subscription^^./tmp/a.js^^setup":{"name":"setup","source":"1","dispatches":[],"id":"Subscription^^./tmp/a.js^^setup","filePath":"./tmp/a.js"}}},"router":null,"routeComponents":[],"dispatches":{}}
     );
   });
+
+  it('models.updateReducer', () => {
+    const source = `
+      export default {
+        namespace: 'count',
+        state: 0,
+        reducers: { a: 1 }
+      };
+    `;
+    outputFileSync(absFilePath, source, 'utf-8');
+    const result = api('models.updateReducer', {
+      filePath,
+      sourcePath: __dirname,
+      namespace: 'count',
+      name: 'a',
+      source: '2',
+    });
+    expect(result).toEqual(
+      {"models":{"data":[{"reducers":["Reducer^^./tmp/a.js^^a"],"effects":[],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{"Reducer^^./tmp/a.js^^a":{"name":"a","source":"2","id":"Reducer^^./tmp/a.js^^a","filePath":"./tmp/a.js"}},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"count/a":{"input":[],"output":["Reducer^^./tmp/a.js^^a"]}}}
+    );
+  });
+
+  it('models.removeReducer', () => {
+    const source = `
+      export default {
+        namespace: 'count',
+        state: 0,
+        reducers: { a: 1 }
+      };
+    `;
+    outputFileSync(absFilePath, source, 'utf-8');
+    const result = api('models.removeReducer', {
+      filePath,
+      sourcePath: __dirname,
+      namespace: 'count',
+      name: 'a',
+    });
+    expect(result).toEqual(
+      {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{}}
+    );
+  });
 });

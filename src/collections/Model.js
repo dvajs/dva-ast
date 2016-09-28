@@ -87,7 +87,7 @@ const methods = {
         if (j.Property.check(prop) && prop.key.name === itemsKey) {
           assert(
             j.ObjectExpression.check(prop.value),
-            `addModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+            `_addModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
           );
           items = prop;
         }
@@ -108,6 +108,99 @@ const methods = {
         utils.getExpression(source || defaultSource)
       );
       items.value.properties.push(item);
+    });
+  },
+
+  updateReducer(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'reducers',
+    });
+  },
+
+  updateEffect(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'effects',
+    });
+  },
+
+  updateSubscription(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'subscriptions',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _updateModelItem(name, source, { itemsKey }) {
+    return this.forEach(path => {
+      let items = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `_updateModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+          );
+          items = prop;
+        }
+      });
+      assert(items, `_updateModelItem: ${itemsKey} not found`);
+
+      let updated = false;
+      items.value.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === name) {
+          updated = true;
+          prop.value = utils.getExpression(source);
+        }
+      });
+      assert(updated, `_updateModelItem: ${itemsKey}.${name} not found`);
+    });
+  },
+
+  removeReducer(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'reducers',
+    });
+  },
+
+  removeEffect(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'effects',
+    });
+  },
+
+  removeSubscription(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'subscriptions',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _removeModelItem(name, { itemsKey }) {
+    return this.forEach(path => {
+      let items = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `_removeModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+          );
+          items = prop;
+        }
+      });
+      assert(items, `_removeModelItem: ${itemsKey} not found`);
+
+      let removed = false;
+      items.value.properties = items.value.properties.filter(prop => {
+        if (j.Property.check(prop) && prop.key.name === name) {
+          removed = true;
+          return false;
+        }
+        return true;
+      });
+      assert(removed, `_removeModelItem: ${itemsKey}.${name} not found`);
     });
   },
 
