@@ -14,6 +14,42 @@ $ npm install
 $ npm run debug
 ```
 
+## API
+
+### runner
+
+- runner(sourcePath, options)
+
+### transform
+
+- transform({ source, path }, { jscodeshift })
+
+### api
+
+#### models
+
+- `create({ namespace })`
+- `remove({ namespace })`
+- `updateNamespace({ namespace, newNamespace })`
+- `updateState({ namespace, source })`
+- `addReducer({ namespace, [source] })`
+- `updateReducer({ namespace, source })`
+- `removeReducer({ namespace })`
+- `addEffect({ namespace, [source] })`
+- `updateEffect({ namespace, source })`
+- `removeEffect({ namespace })`
+- `addSubscription({ namespace, [source] })`
+- `updateSubscription({ namespace, source })`
+- `removeSubscription({ namespace })`
+
+#### routeComponents
+
+TODO
+
+#### router
+
+TODO
+
 ## LICENSE
 
 MIT
