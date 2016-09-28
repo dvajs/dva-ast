@@ -46,6 +46,26 @@ const methods = {
     });
   },
 
+  updateState(source) {
+    return this.forEach(path => {
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === 'state') {
+          // add `()` to object for preventing parse it as BlockStatement
+          if (source.charAt(0) === '{' && source.charAt(source.length - 1) === '}') {
+            source = `(${source})`;
+          }
+          const program = j(source).find(j.Program).get();
+          const node = program.node.body[0];
+          assert(
+            j.ExpressionStatement.check(node),
+            `updateState: body's first node should be ExpressionStatement, but got ${node.type}`
+          );
+          prop.value = node.expression;
+        }
+      });
+    });
+  },
+
   getModelInfo() {
     const defaultModel = {
       reducers: [],

@@ -30,11 +30,20 @@ export function updateNamespace(payload) {
   const source = readFile(filePath);
   const root = j(source);
   root.findModels(payload.namespace).updateNamespace(payload.newNamespace);
-  const newSource = root.toSource();
-  writeFile(filePath, newSource);
+  writeFile(filePath, root.toSource());
 }
 
-export function updateState(payload) {}
+export function updateState(payload) {
+  assert(
+    payload.namespace && payload.source,
+    'api/models/updateNamespace: payload should have namespace and source'
+  );
+  const filePath = join(payload.sourcePath, payload.filePath);
+  const source = readFile(filePath);
+  const root = j(source);
+  root.findModels(payload.namespace).updateState(payload.source);
+  writeFile(filePath, root.toSource());
+}
 
 export function addReducer(payload) {}
 

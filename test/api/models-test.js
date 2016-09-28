@@ -41,4 +41,23 @@ describe('api/models', () => {
       {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":[],"namespace":"newCount","state":0,"id":"Model^^./tmp/a.js^^newCount","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{}}
     );
   });
+
+  it('models.updateState', () => {
+    const source = `
+      export default {
+        namespace: 'count',
+        state: 0,
+      };
+    `;
+    outputFileSync(absFilePath, source, 'utf-8');
+    const result = api('models.updateState', {
+      filePath,
+      sourcePath: __dirname,
+      namespace: 'count',
+      source: '{ a: 1 }',
+    });
+    expect(result).toEqual(
+      {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":[],"namespace":"count","state":{"a":1},"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{}}
+    );
+  });
 });
