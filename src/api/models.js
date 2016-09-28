@@ -16,37 +16,73 @@ export function create(payload) {
   writeFile(filePath, source);
 }
 
+export function remove(payload) {
+  const filePath = join(payload.sourcePath, payload.filePath);
+  removeFile(filePath);
+}
+
 export function updateNamespace(payload) {
-  // TODO: 一个文件里只能有一个 model, 否则这里根据文件去找 model 就会有问题了
-  assert(
-    payload.namespace && payload.newNamespace,
-    'api/models/updateNamespace: payload should have namespace and newNamespace'
-  );
+  _action('updateNamespace', payload, ['newNamespace']);
+}
+
+export function updateState(payload) {
+  _action('updateState', payload, ['source']);
+}
+
+export function addReducer(payload) {
+  _action('addReducer', payload, ['name', 'source'], ['source']);
+}
+
+export function addEffect(payload) {
+  _action('addEffect', payload, ['name', 'source'], ['source']);
+}
+
+export function addSubscription(payload) {
+  _action('addSubscription', payload, ['name', 'source'], ['source']);
+}
+
+export function updateReducer(payload) {
+  _action('updateReducer', payload, ['name', 'source']);
+}
+
+export function updateEffect(payload) {
+  _action('updateEffect', payload, ['name', 'source']);
+}
+
+export function updateSubscription(payload) {
+  _action('updateSubscription', payload, ['name', 'source']);
+}
+
+export function removeReducer(payload) {
+  _action('removeReducer', payload, ['name']);
+}
+
+export function removeEffect(payload) {
+  _action('removeEffect', payload, ['name']);
+}
+
+export function removeSubscription(payload) {
+  _action('removeSubscription', payload, ['name']);
+}
+
+
+/**
+ * private
+ */
+function _action(type, payload, checklist, optional = []) {
+  for (let checkitem of ['namespace', ...checklist]) {
+    if (optional.indexOf(checkitem) === -1) {
+      assert(payload[checkitem], `api/models/${type}: payload should have ${checkitem}`);
+    }
+  }
+
   const filePath = join(payload.sourcePath, payload.filePath);
   const source = readFile(filePath);
   const root = j(source);
-  root.findModels(payload.namespace).updateNamespace(payload.newNamespace);
-  const newSource = root.toSource();
-  writeFile(filePath, newSource);
+  const models = root.findModels(payload.namespace);
+  const args = checklist.map(checkitem => payload[checkitem]);
+  models[type].apply(models, args);
+  writeFile(filePath, root.toSource());
 }
 
-export function updateState(payload) {}
-
-export function addReducer(payload) {}
-
-export function updateReducer(payload) {}
-
-export function deleteReducer(payload) {}
-
-export function addEffect(payload) {}
-
-export function updateEffect(payload) {}
-
-export function deleteEffect(payload) {}
-
-export function addSubscription(payload) {}
-
-export function updateSubscription(payload) {}
-
-export function deleteSubscription(payload) {}
 

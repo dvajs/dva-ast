@@ -48,4 +48,78 @@ describe('collections/Model', () => {
     });
   });
 
+  describe('addReducer', () => {
+    it('has reducers', () => {
+      const root = j(`({reducers:{}})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add');
+      expect(root.toSource()).toEqual(`({reducers:{
+  add: function(state) {
+    return state;
+  }
+}})`);
+    });
+    it('no reducers', () => {
+      const root = j(`({})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add');
+      expect(root.toSource()).toEqual(`(({
+  reducers: {
+    add: function(state) {
+      return state;
+    }
+  }
+}))`);
+    });
+    it('add with source', () => {
+      const root = j(`({})`);
+      root.find(j.ObjectExpression).at(0).addReducer('add', 'function(state) { return state + 1; }');
+      expect(root.toSource()).toEqual(`(({
+  reducers: {
+    add: function(state) { return state + 1; }
+  }
+}))`);
+    });
+  });
+
+  describe('updateReducer', () => {
+    it('normal', () => {
+      const root = j(`({reducers:{a:1,b:2}})`);
+      root.find(j.ObjectExpression).at(0).updateReducer('a', '2');
+      expect(root.toSource()).toEqual(`({reducers:{a:2,b:2}})`);
+    });
+    it('throw error if reducers not found', () => {
+      const root = j(`({})`);
+      expect(() => {
+        root.find(j.ObjectExpression).at(0).updateReducer('a', '2');
+      }).toThrow(/_updateModelItem: reducers not found/);
+    });
+    it('throw error if reducers.item not found', () => {
+      const root = j(`({reducers:{a:1,b:2}})`);
+      expect(() => {
+        root.find(j.ObjectExpression).at(0).updateReducer('c', '2');
+      }).toThrow(/_updateModelItem: reducers.c not found/);
+    });
+  });
+
+  describe('removeReducer', () => {
+    it('normal', () => {
+      const root = j(`({reducers:{a:1,b:2}})`);
+      root.find(j.ObjectExpression).at(0).removeReducer('a');
+      expect(root.toSource()).toEqual(`({reducers:{
+  b:2
+}})`);
+    });
+    it('throw error if reducers not found', () => {
+      const root = j(`({})`);
+      expect(() => {
+        root.find(j.ObjectExpression).at(0).removeReducer('a');
+      }).toThrow(/_removeModelItem: reducers not found/);
+    });
+    it('throw error if reducers.item not found', () => {
+      const root = j(`({reducers:{a:1,b:2}})`);
+      expect(() => {
+        root.find(j.ObjectExpression).at(0).removeReducer('c');
+      }).toThrow(/_removeModelItem: reducers.c not found/);
+    });
+  });
+
 });

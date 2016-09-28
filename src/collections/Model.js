@@ -46,6 +46,164 @@ const methods = {
     });
   },
 
+  updateState(source) {
+    return this.forEach(path => {
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === 'state') {
+          prop.value = utils.getExpression(source);
+        }
+      });
+    });
+  },
+
+  addReducer(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'reducers',
+      defaultSource: 'function(state) {\n  return state;\n}',
+    });
+  },
+
+  addEffect(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'effects',
+      defaultSource: '*function(action, { call, put, select }) {\n}',
+    });
+  },
+
+  addSubscription(name, source) {
+    this._addModelItem(name, source, {
+      itemsKey: 'subscriptions',
+      defaultSource: 'function({ dispatch, history }) {\n}',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _addModelItem(name, source, { itemsKey, defaultSource }) {
+    return this.forEach(path => {
+      let items = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `_addModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+          );
+          items = prop;
+        }
+      });
+
+      if (!items) {
+        items = j.property(
+          'init',
+          j.identifier(itemsKey),
+          j.objectExpression([])
+        );
+        path.node.properties.push(items);
+      }
+
+      const item = j.property(
+        'init',
+        j.identifier(name),
+        utils.getExpression(source || defaultSource)
+      );
+      items.value.properties.push(item);
+    });
+  },
+
+  updateReducer(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'reducers',
+    });
+  },
+
+  updateEffect(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'effects',
+    });
+  },
+
+  updateSubscription(name, source) {
+    this._updateModelItem(name, source, {
+      itemsKey: 'subscriptions',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _updateModelItem(name, source, { itemsKey }) {
+    return this.forEach(path => {
+      let items = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `_updateModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+          );
+          items = prop;
+        }
+      });
+      assert(items, `_updateModelItem: ${itemsKey} not found`);
+
+      let updated = false;
+      items.value.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === name) {
+          updated = true;
+          prop.value = utils.getExpression(source);
+        }
+      });
+      assert(updated, `_updateModelItem: ${itemsKey}.${name} not found`);
+    });
+  },
+
+  removeReducer(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'reducers',
+    });
+  },
+
+  removeEffect(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'effects',
+    });
+  },
+
+  removeSubscription(name) {
+    this._removeModelItem(name, {
+      itemsKey: 'subscriptions',
+    });
+  },
+
+  /**
+   * @private
+   */
+  _removeModelItem(name, { itemsKey }) {
+    return this.forEach(path => {
+      let items = null;
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === itemsKey) {
+          assert(
+            j.ObjectExpression.check(prop.value),
+            `_removeModelItem: ${itemsKey} should be ObjectExpression, but got ${prop.value.type}`
+          );
+          items = prop;
+        }
+      });
+      assert(items, `_removeModelItem: ${itemsKey} not found`);
+
+      let removed = false;
+      items.value.properties = items.value.properties.filter(prop => {
+        if (j.Property.check(prop) && prop.key.name === name) {
+          removed = true;
+          return false;
+        }
+        return true;
+      });
+      assert(removed, `_removeModelItem: ${itemsKey}.${name} not found`);
+    });
+  },
+
   getModelInfo() {
     const defaultModel = {
       reducers: [],
