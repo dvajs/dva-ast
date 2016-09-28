@@ -8,23 +8,41 @@ Helper.register();
 
 const methods = {
 
-  findModels() {
+  findModels(namespace) {
     return this.find(j.ObjectExpression, node => {
       const props = node.properties.reduce((memo, prop) => {
         if (j.Property.check(prop)) {
-          memo[prop.key.name] = true;
+          if (prop.key.name === 'namespace') {
+            assert(
+              j.Literal.check(prop.value),
+              `findModels: namespace should be Literal, but got ${prop.value.type}`
+            );
+            memo[prop.key.name] = prop.value.value;
+          } else {
+            memo[prop.key.name] = true;
+          }
         }
         return memo;
       }, {});
-      return props.namespace &&
-        (
-          // state 不是必须的
-          // 但为增加准确性, 还需要声明除 namespace 以外的其他任一项
-          props.state ||
-          props.reducers ||
-          props.effects ||
-          props.subscriptions
-        );
+
+      if (!props.namespace) return false;
+      if (namespace && props.namespace !== namespace) return false;
+      // state 不是必须的
+      // 但为增加准确性, 还需要声明除 namespace 以外的其他任一项
+      return props.state ||
+        props.reducers ||
+        props.effects ||
+        props.subscriptions;
+    });
+  },
+
+  updateNamespace(newNamespace) {
+    return this.forEach(path => {
+      path.node.properties.forEach(prop => {
+        if (j.Property.check(prop) && prop.key.name === 'namespace') {
+          prop.value = j.literal(newNamespace);
+        }
+      });
     });
   },
 
