@@ -44,7 +44,10 @@ $ npm run debug
 
 #### routeComponents
 
-TODO
+- `create({ componentName })`
+- `remove()`
+- `update()`
+- `addDispatch({ actionType })`
 
 #### router
 
