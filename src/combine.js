@@ -5,42 +5,13 @@ import { sync as globSync } from 'glob';
 import { readFileSync } from 'fs';
 import transform from './transform';
 
-export default function runner(sourcePath, options) {
+export default function combine(infos) {
+  return Object.keys(infos).reduce((memo, filePath) => {
+    return merge(memo, infos[filePath]);
+  }, {});
+}
 
-  const files = globSync('**/*.js?(x)', {
-    cwd: sourcePath,
-    dot: false,
-    ignore: ['node_modules/*']
-  });
-
-  let ret = {};
-  files.forEach(path => {
-    const source = readFileSync(join(sourcePath, path), 'utf-8');
-    const file = { path, source };
-    const api = { jscodeshift: j };
-    const info = transform(file, api);
-    //console.log(path);
-    //console.log(info);
-    //console.log('----------------');
-    ret = combine(ret, info);
-  });
-  return ret;
-
-  //return Runner.run(
-  //    join(__dirname, 'transform.js'),
-  //    [sourcePath],
-  //    {
-  //      extensions: 'js,jsx',
-  //      dry: true,
-  //      ...options,
-  //    }
-  //  ).then(({ transformInfo }) => {
-  //    console.log('transformInfo', transformInfo);
-  //  });
-
-};
-
-export function combine(oldInfo, newInfo) {
+function merge(oldInfo, newInfo) {
   return {
     models: combineModels(oldInfo.models, newInfo.models),
     router: combineRouter(oldInfo.router, newInfo.router),
@@ -49,7 +20,7 @@ export function combine(oldInfo, newInfo) {
   };
 }
 
-export function combineModels(oldModels, newModels) {
+function combineModels(oldModels, newModels) {
   if (!oldModels) return newModels;
   return {
     data: [ ...oldModels.data, ...newModels.data ],
@@ -59,11 +30,11 @@ export function combineModels(oldModels, newModels) {
   }
 }
 
-export function combineRouter(oldRouter, newRouter) {
+function combineRouter(oldRouter, newRouter) {
   return oldRouter || newRouter;
 }
 
-export function combineDispatches(oldDispatches, newDispatches) {
+function combineDispatches(oldDispatches, newDispatches) {
   const ret = { ...oldDispatches };
   for (let key in newDispatches) {
     if (newDispatches.hasOwnProperty(key)) {
@@ -80,6 +51,6 @@ export function combineDispatches(oldDispatches, newDispatches) {
   return ret;
 }
 
-export function combineRouteComponents(oldRC = [], newRC) {
+function combineRouteComponents(oldRC = [], newRC) {
   return [ ...oldRC, ...newRC ];
 }
