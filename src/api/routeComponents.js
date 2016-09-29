@@ -4,7 +4,7 @@ import {
   readFile,
   removeFile,
 } from './utils';
-import { getExpression } from '../utils';
+import { getExpression } from '../utils/index';
 import { join } from 'path';
 import assert from 'assert';
 import j from 'jscodeshift';

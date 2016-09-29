@@ -1,6 +1,6 @@
 import jscodeshift from 'jscodeshift';
 import assert from 'assert';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import transform from '../transform';
 
@@ -32,9 +32,12 @@ export default function(type, payload) {
 
   // 返回新的 transform 结果
   const { filePath, sourcePath } = payload;
-  const file = {
-    source: readFileSync(join(sourcePath, filePath), 'utf-8'),
-    path: filePath,
-  };
-  return transform(file, { jscodeshift });
+  const absFilePath = join(sourcePath, filePath);
+  if (existsSync(absFilePath)) {
+    const file = {
+      source: readFileSync(absFilePath, 'utf-8'),
+      path: filePath,
+    };
+    return transform(file, {jscodeshift});
+  }
 }
