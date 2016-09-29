@@ -28,6 +28,8 @@ $ npm run debug
 
 #### models
 
+All apis of models contains `sourcePath` and ``filePath`.
+
 - `create({ namespace })`
 - `remove({ namespace })`
 - `updateNamespace({ namespace, newNamespace })`
@@ -44,10 +46,17 @@ $ npm run debug
 
 #### routeComponents
 
+All apis of routeComponents contains `sourcePath` and ``filePath`.
+
 - `create({ componentName })`
 - `remove()`
 - `update()`
 - `addDispatch({ actionType })`
+
+### project
+
+- `loadAll({ sourcePath })`
+- `loadAll({ sourcePath, filePath })`
 
 #### router
 
