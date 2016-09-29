@@ -97,6 +97,32 @@ describe('api/routeComponents', () => {
       actionType: 'app/initilize'
     });
 
-    expect(result).toEqual({ dispatches: { 'app/initilize': { input: [ 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage' ], output: [] } }, models: { data: [], effectByIds: {}, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [ { dispatches: [ 'app/initilize' ], filePath: './tmp/IndexPage.jsx', id: 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage', name: 'IndexPage', source: 'import React, { Component } from \'react\';\n\nexport default class IndexPage extends Component {\n  ["app/initilize"]() {\n    this.props.dispatch({ type: \'app/initilize\', payload: {} });\n  }\n\n  render() {\n    return (\n      <div><button onClick={() => { this["app/initilize"]; }}>click to dispatch app/initilize</button>Component: \'IndexPage\'</div>\n    );\n  }\n}\n', stateMappings: [] } ], router: null });
+    expect(result).toEqual({ dispatches: { 'app/initilize': { input: [ 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage' ], output: [] } }, models: { data: [], effectByIds: {}, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [ { dispatches: [ 'app/initilize' ], filePath: './tmp/IndexPage.jsx', id: 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage', name: 'IndexPage', source: 'import React, { Component } from \'react\';\n\nexport default class IndexPage extends Component {\n  ["app/initilize"]() {\n    this.props.dispatch({ type: \'app/initilize\', payload: {} });\n  }\n\n  render() {\n    return (\n      <div><button onClick={() => { this["app/initilize"](); }}>click to dispatch app/initilize</button>Component: \'IndexPage\'</div>\n    );\n  }\n}\n', stateMappings: [] } ], router: null });
+  });
+
+  it('routeComponents.addDispatch for Pure Function', () => {
+    api('routeComponents.update', {
+      filePath,
+      sourcePath: __dirname,
+      "source": `
+import React, { PropTypes } from 'react'
+
+function Hello(props) {
+  return (
+    <div>Helloxxxx</div>
+  )
+}
+
+export default Hello;
+`,
+    });
+
+    const result = api('routeComponents.addDispatch', {
+      filePath,
+      sourcePath: __dirname,
+      actionType: 'app/initilize'
+    });
+
+    expect(result).toEqual({ dispatches: { 'app/initilize': { input: [ 'RouteComponent^^./tmp/IndexPage.jsx^^Hello' ], output: [] } }, models: { data: [], effectByIds: {}, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [ { dispatches: [ 'app/initilize' ], filePath: './tmp/IndexPage.jsx', id: 'RouteComponent^^./tmp/IndexPage.jsx^^Hello', name: 'Hello', source: '\nimport React, { PropTypes } from \'react\'\n\nfunction Hello(props) {\n  return (\n    <div><button onClick={() => { props.dispatch({ type: \'app/initilize\', payload: {} }); }}>click to dispatch app/initilize</button>Helloxxxx</div>\n  )\n}\n\nexport default Hello;\n', stateMappings: [] } ], router: null });
   });
 });
