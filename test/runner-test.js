@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 
 const fixtures = join(__dirname, 'fixtures');
 
-describe('runner', () => {
+xdescribe('runner', () => {
 
   it('count', () => {
     const result = runner(join(fixtures, 'projects/count/actual'));

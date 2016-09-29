@@ -7,19 +7,27 @@ import transform from '../transform';
 import * as models from './models';
 import * as routeComponents from './routeComponents';
 import * as router from './router';
+import * as project from './project';
 
 const TYPE_SEP = '.';
 const apiMap = {
   models,
   routeComponents,
   router,
+  project,
 };
 
 export default function(type, payload) {
   // sourcePath 由 server 端额外提供
   assert(type, `api: type should be defined`);
-  assert(payload.filePath, `api: payload should have filePath`);
   assert(payload.sourcePath, `api: payload should have sourcePath`);
+
+  // project.loadAll 逻辑特殊
+  if (type === 'project.loadAll') {
+    return project.loadAll(payload);
+  }
+
+  assert(payload.filePath, `api: payload should have filePath`);
   const [cat, method] = type.split(TYPE_SEP);
 
   assert(cat && method, `api: type should be cat.method, e.g. models.create`);
