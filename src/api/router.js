@@ -12,8 +12,7 @@ import j from 'jscodeshift';
 
 // TODO: check react-router version
 // assume that router.js is already created
-function findParentRoute(root) {
-  // TODO, support find by parentId
+function findRouterNode(root) {
   return root.find(
     j.JSXElement, {
       openingElement: {
@@ -25,8 +24,55 @@ function findParentRoute(root) {
   ).nodes()[0];
 }
 
-function createElement(root, el, attributes = []) {
-  const parentRoute = findParentRoute(root);
+// TODO: id 规则需要跟 collection 中复用
+function findParentRoute(root, id) {
+  if (!id) return findRouterNode(root);
+  function find(node, parentPath = '', parentId) {
+    const type = node.openingElement.name.name;
+    const attributes = node.openingElement.attributes;
+    let path;
+    for (let i = 0; i < attributes.length; i++) {
+      if (attributes[i].name.name === 'path') {
+        path = attributes[i].value.value;
+      }
+    }
+
+    let absolutePath;
+    if (path) {
+      absolutePath = path.charAt(0) === '/' ? path : `${parentPath}/${path}`;
+    }
+
+    let currentId;
+    if (absolutePath) {
+      currentId = `${type}-${absolutePath}`;
+    } else if (parentId) {
+      currentId = `${type}-parentId_${parentId}`;
+    } else {
+      currentId = `${type}-root`;
+    }
+
+    // found!
+    if (currentId === id) return node;
+
+    let found;
+    if (node.children) {
+      const childElements = node.children.filter(node => node.type === 'JSXElement');
+      for (let i = 0; i < childElements.length; i++) {
+        found = find(childElements[i], path, currentId);
+        if (found) break;
+      }
+    }
+    return found;
+  }
+
+  return find(findRouterNode(root), id);
+}
+
+function createElement(root, el, attributes = [], parentId) {
+  const parentRoute = findParentRoute(root, parentId);
+  if (!parentRoute) {
+    throw new Error('createRoute, no element find by parentId');
+  }
   parentRoute.children.push(
     j.jsxElement(
       j.jsxOpeningElement(
@@ -45,19 +91,18 @@ function createElement(root, el, attributes = []) {
               j.literal(attr.value)
             );
           }
-        })
+        }),
+        true
       ),
-      j.jsxClosingElement(
-        j.jsxIdentifier(el)
-      ),
-      []
+      null,
+      [],
     )
   );
   parentRoute.children.push(j.jsxText('\n'));
 }
 
 export function createRoute(payload) {
-  const { path, component = {} } = payload;
+  const { path, component = {}, parentId } = payload;
   assert(
     path && component.componentName,
     'api/router/createRoute: payload should at least have path or compnent'
@@ -77,7 +122,7 @@ export function createRoute(payload) {
   if (component.componentName) {
     attributes.push({ key: 'component', value: component.componentName, isExpression: true });
   }
-  createElement(root, 'Route', attributes);
+  createElement(root, 'Route', attributes, parentId);
 
   if (!component.componentName) return writeFile(filePath, root.toSource());
   assert(
@@ -125,7 +170,8 @@ export function createRedirect(payload) {
     [
       { key: 'from', value: payload.from },
       { key: 'to', value: payload.to },
-    ]
+    ],
+    payload.parentId
   );
 
   writeFile(filePath, root.toSource());
@@ -145,7 +191,8 @@ export function createIndexRedirect(payload) {
     'IndexRedirect',
     [
       { key: 'to', value: payload.to },
-    ]
+    ],
+    payload.parentId
   );
 
   writeFile(filePath, root.toSource());

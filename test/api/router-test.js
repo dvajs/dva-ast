@@ -56,10 +56,23 @@ export default function({ history }) {
     expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"Route","attributes":{"path":"Test","component":"Test"},"absolutePath":"/Test","id":"Route-/Test","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
-  // it('router.createRoute: with parent', () => {
-  //   const result = {i: 1};
-  //   expect(result).toEqual({})
-  // });
+  it('router.createRoute: with parentId', () => {
+    prepareRouterjs();
+    prepareComponent();
+
+    const result = api('router.createRoute', {
+      filePath,
+      sourcePath: __dirname,
+      parentId: 'Route-/users',
+      path: 'Test',
+      component: {
+        componentName: 'Test',
+        filePath: componentFilePath,
+      },
+    });
+
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},{"type":"Route","attributes":{"path":"Test","component":"Test"},"absolutePath":"/users/Test","id":"Route-/users/Test","children":[]}]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+  });
 
   it('router.createRedirect', () => {
     prepareRouterjs();
