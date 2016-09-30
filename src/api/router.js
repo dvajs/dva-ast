@@ -101,13 +101,8 @@ function createElement(root, el, attributes = [], parentId) {
   parentRoute.children.push(j.jsxText('\n'));
 }
 
-export function createRoute(payload) {
+function __createRoute(payload, type) {
   const { path, component = {}, parentId } = payload;
-  assert(
-    path && component.componentName,
-    'api/router/createRoute: payload should at least have path or compnent'
-  );
-
   const filePath = join(payload.sourcePath, payload.filePath);
   const source = readFile(filePath);
   const root = j(source);
@@ -122,7 +117,7 @@ export function createRoute(payload) {
   if (component.componentName) {
     attributes.push({ key: 'component', value: component.componentName, isExpression: true });
   }
-  createElement(root, 'Route', attributes, parentId);
+  createElement(root, type, attributes, parentId);
 
   if (!component.componentName) return writeFile(filePath, root.toSource());
   assert(
@@ -151,8 +146,22 @@ export function createRoute(payload) {
   writeFile(filePath, root.toSource());
 }
 
-export function createIndexRoute() {
+export function createRoute(payload) {
+  const { path, component = {}, parentId } = payload;
+  assert(
+    payload.path || (payload.component && payload.component.componentName),
+    'api/router/createRoute: payload should at least have path or compnent'
+  );
+  __createRoute(payload, 'Route');
+}
 
+export function createIndexRoute(payload) {
+  const { component = {}, parentId } = payload;
+  assert(
+    payload.component && payload.component.componentName,
+    'api/router/createIndexRoute: payload should at have compnent'
+  );
+  __createRoute(payload, 'IndexRoute');
 }
 
 export function createRedirect(payload) {
