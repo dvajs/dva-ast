@@ -8,7 +8,7 @@ describe('api/routeComponents', () => {
   const absFilePath = join(__dirname, filePath);
 
   afterEach(() => {
-    // removeSync(dirname(absFilePath));
+    removeSync(dirname(absFilePath));
   });
 
   const prepareRouterjs = () => {
