@@ -60,7 +60,15 @@ All apis of routeComponents contains `sourcePath` and ``filePath`.
 
 #### router
 
-TODO
+- `createRoute({ path, component, [parentId] })`
+  - component <object>
+    - componentName
+    - filePath, if file is not exist, dva-ast will create a new component for you
+- `createIndexRoute({ component, [parentId] })`
+- `createRedirect({ from, to, [parentId] })`
+- `createIndexRedirect({ to, [parentId] })`
+- `remove({ id })`
+- `moveTo({ id, parentId })`
 
 ## LICENSE
 
