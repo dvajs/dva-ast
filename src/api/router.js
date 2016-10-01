@@ -237,3 +237,45 @@ export function remove(payload) {
 
   writeFile(filePath, root.toSource());
 }
+
+export function moveTo(payload) {
+  assert(
+    payload.id,
+    'api/router/moveTo: payload should have id & parentId'
+  );
+  const filePath = join(payload.sourcePath, payload.filePath);
+  const source = readFile(filePath);
+  const root = j(source);
+  const route = findRouteById(root, payload.id);
+  if (!route) {
+    throw new Error(`api/router/moveTo: didn\'t find route by id: ${id}`);
+  }
+
+  let parentRoute;
+  if (payload.parentId) {
+    parentRoute = findRouteById(root, payload.parentId);
+    if (!parentRoute) {
+      throw new Error(`api/router/moveTo: didn\'t find parent route by id: ${parentId}`);
+    }
+  } else {
+    parentRoute = findRouterNode(root);
+  }
+
+  root.find(j.JSXElement, {
+    start: route.start,
+    end: route.end,
+  }).at(0).remove();
+
+  if (parentRoute.openingElement.selfClosing) {
+    parentRoute.openingElement.selfClosing = false;
+    parentRoute.closingElement = j.jsxClosingElement(
+      j.jsxIdentifier(parentRoute.openingElement.name.name)
+    );
+  }
+
+  parentRoute.children.push(j.jsxText('\n'));
+  parentRoute.children.push(route);
+
+
+  writeFile(filePath, root.toSource());
+}

@@ -157,4 +157,16 @@ export default function({ history }) {
     });
   });
 
+  it('router.moveTo', () => {
+    prepareRouterjs();
+
+    const result = api('router.moveTo', {
+      filePath,
+      sourcePath: __dirname,
+      id: 'Route-/users/user',
+      parentId: 'Route-/',
+    });
+
+    expect(result).toEqual({});
+  });
 });
