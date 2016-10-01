@@ -167,6 +167,56 @@ export default function({ history }) {
       parentId: 'Route-/',
     });
 
-    expect(result).toEqual({});
+    expect(result).toEqual({
+      "dispatches": {},
+      "models": {
+        "data": [],
+        "effectByIds": {},
+        "reducerByIds": {},
+        "subscriptionByIds": {},
+      },
+      "routeComponents": [],
+      "router": {
+        "attributes": {
+          "history": "history",
+        },
+        "children": [
+          {
+            "absolutePath": "/",
+            "attributes": {
+              "component": "IndexPage",
+              "path": "/",
+            },
+            "children": [
+              {
+                "absolutePath": "//user",
+                "attributes": {
+                  "component": "UserDetailPage",
+                  "path": "user",
+                },
+                "children": [],
+                "id": "Route-//user",
+                "type": "Route",
+              },
+            ],
+            "id": "Route-/",
+            "type": "Route",
+          },
+          {
+            "absolutePath": "/users",
+            "attributes": {
+              "component": "UserPage",
+              "path": "/users",
+            },
+            "children": [],
+            "id": "Route-/users",
+            "type": "Route",
+          },
+        ],
+        "filePath": "./tmp/router.js",
+        "id": "Router-root",
+        "type": "Router",
+      },
+    });
   });
 });
