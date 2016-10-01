@@ -122,9 +122,39 @@ export default function({ history }) {
     const result = api('router.remove', {
       filePath,
       sourcePath: __dirname,
-      id: 'Route-/',
+      id: 'Route-/users',
     });
 
-    expect(result).toEqual({});
+    expect(result).toEqual({
+      "dispatches": {},
+      "models": {
+        "data": [],
+        "effectByIds": {},
+        "reducerByIds": {},
+        "subscriptionByIds": {},
+      },
+      "routeComponents": [],
+      "router": {
+        "attributes": {
+          "history": "history"
+        },
+        "children": [
+          {
+            "absolutePath": "/",
+            "attributes": {
+              "component": "IndexPage",
+              "path": "/",
+            },
+            "children": [],
+            "id": "Route-/",
+            "type": "Route",
+          }
+        ],
+        "filePath": "./tmp/router.js",
+        "id": "Router-root",
+        "type": "Router",
+      },
+    });
   });
+
 });
