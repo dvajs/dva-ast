@@ -115,4 +115,16 @@ export default function({ history }) {
 
     expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"IndexRedirect","attributes":{"to":"/a/c"},"id":"IndexRedirect-parentId_Router-root","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
+
+  it('router.remove', () => {
+    prepareRouterjs();
+
+    const result = api('router.remove', {
+      filePath,
+      sourcePath: __dirname,
+      id: 'Route-/',
+    });
+
+    expect(result).toEqual({});
+  });
 });

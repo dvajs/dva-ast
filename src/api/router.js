@@ -24,9 +24,7 @@ function findRouterNode(root) {
   ).nodes()[0];
 }
 
-// TODO: id 规则需要跟 collection 中复用
-function findParentRoute(root, id) {
-  if (!id) return findRouterNode(root);
+function findRouteById(root, id) {
   function find(node, parentPath = '', parentId) {
     const type = node.openingElement.name.name;
     const attributes = node.openingElement.attributes;
@@ -66,6 +64,15 @@ function findParentRoute(root, id) {
   }
 
   return find(findRouterNode(root), id);
+}
+
+// TODO: id 规则需要跟 collection 中复用
+function findParentRoute(root, id) {
+  if (!id) {
+    return findRouterNode(root);
+  } else {
+    return findRouteById(root, id);
+  }
 }
 
 function createElement(root, el, attributes = [], parentId) {
@@ -203,6 +210,30 @@ export function createIndexRedirect(payload) {
     ],
     payload.parentId
   );
+
+  writeFile(filePath, root.toSource());
+}
+
+export function remove(payload) {
+  assert(
+    payload.id,
+    'api/router/remove: payload should have id'
+  );
+  const filePath = join(payload.sourcePath, payload.filePath);
+  const source = readFile(filePath);
+  const root = j(source);
+  const route = findRouteById(root, payload.id);
+  if (!route) {
+    throw new Error(`api/router/remove: didn\'t find route by id: ${id}`);
+  }
+
+  // don't know why j(route).remove dosen't work
+  // here use a workaround, find it again and then remove it.
+  // TODO: need to remove the empty line left behind
+  root.find(j.JSXElement, {
+    start: route.start,
+    end: route.end,
+  }).at(0).remove();
 
   writeFile(filePath, root.toSource());
 }
