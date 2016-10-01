@@ -67,6 +67,7 @@ All apis of routeComponents contains `sourcePath` and ``filePath`.
 - `createIndexRoute({ component, [parentId] })`
 - `createRedirect({ from, to, [parentId] })`
 - `createIndexRedirect({ to, [parentId] })`
+- `remove({ id })`
 
 ## LICENSE
 
