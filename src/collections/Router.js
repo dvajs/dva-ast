@@ -22,9 +22,10 @@ const methods = {
 
   // TODO: support config router with JavaScript Object
   getRouterInfo() {
+    const routeByIds = {};
     const ROUTER_COMPONENTS = ['Router', 'Route', 'Redirect', 'IndexRedirect', 'IndexRoute'];
 
-    function parse(node, parentPath = '', parentId) {
+    function parse(node, parentPath = '', parentId, parentDepth = -1) {
       assert(
         node.type === 'JSXElement',
         `getRouterTree: node should be JSXElement, but got ${node.type}`
@@ -36,7 +37,7 @@ const methods = {
       );
 
       const ret = { type: name };
-
+      ret.depth = parentDepth + 1;
       ret.attributes = j(node.openingElement)
         .find(j.JSXAttribute)
         .simpleMap(path => {
@@ -67,10 +68,15 @@ const methods = {
       if (node.children) {
         ret.children = node.children
           .filter(node => node.type === 'JSXElement')
-          .map(node => parse(node, ret.attributes.path, ret.id));
+          .map(node => parse(node, ret.attributes.path, ret.id, ret.depth));
       }
 
-      return ret;
+      routeByIds[ret.id] = ret;
+
+      return {
+        id: ret.id,
+        children: ret.children,
+      };
     }
 
     function getAttributeValue(node) {
@@ -84,7 +90,10 @@ const methods = {
       throw new Error(`getRouterTree: unsupported attribute type`);
     }
 
-    return this.simpleMap(path => parse(path.node));
+    return this.simpleMap(path => ({
+      tree: parse(path.node),
+      routeByIds,
+    }));
   },
 
 };
@@ -96,4 +105,3 @@ function register(jscodeshift = j) {
 export default {
   register: once(register),
 };
-

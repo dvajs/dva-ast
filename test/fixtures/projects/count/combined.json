@@ -73,21 +73,40 @@
     }
   },
   "router": {
-    "type": "Router",
-    "attributes": {
-      "history": "history"
+    "tree": {
+      "id": "Router-root",
+      "children": [
+        {
+          "id": "Route-parentId_Router-root",
+          "children": []
+        }
+      ]
     },
-    "id": "Router-root",
-    "children": [
-      {
+    "routeByIds": {
+      "Route-parentId_Router-root": {
         "type": "Route",
+        "depth": 1,
         "attributes": {
           "component": "App"
         },
         "id": "Route-parentId_Router-root",
         "children": []
+      },
+      "Router-root": {
+        "type": "Router",
+        "depth": 0,
+        "attributes": {
+          "history": "history"
+        },
+        "id": "Router-root",
+        "children": [
+          {
+            "id": "Route-parentId_Router-root",
+            "children": []
+          }
+        ]
       }
-    ],
+    },
     "filePath": "router.js"
   },
   "dispatches": {

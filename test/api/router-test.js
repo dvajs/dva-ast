@@ -53,7 +53,7 @@ export default function({ history }) {
         filePath: componentFilePath,
       },
     });
-    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"Route","attributes":{"path":"Test","component":"Test"},"absolutePath":"/Test","id":"Route-/Test","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"Route-/Test","children":[]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Route-/users/user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},"Route-/Test":{"type":"Route","depth":1,"attributes":{"path":"Test","component":"Test"},"absolutePath":"/Test","id":"Route-/Test","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"Route-/Test","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
   it('router.createRoute: with parentId', () => {
@@ -70,8 +70,7 @@ export default function({ history }) {
         filePath: componentFilePath,
       },
     });
-
-    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},{"type":"Route","attributes":{"path":"Test","component":"Test"},"absolutePath":"/users/Test","id":"Route-/users/Test","children":[]}]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]},{"id":"Route-/users/Test","children":[]}]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Route-/users/user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},"Route-/users/Test":{"type":"Route","depth":2,"attributes":{"path":"Test","component":"Test"},"absolutePath":"/users/Test","id":"Route-/users/Test","children":[]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"id":"Route-/users/user","children":[]},{"id":"Route-/users/Test","children":[]}]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]},{"id":"Route-/users/Test","children":[]}]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
   it('router.createIndexRoute', () => {
@@ -86,8 +85,7 @@ export default function({ history }) {
         filePath: componentFilePath,
       },
     });
-
-    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"IndexRoute","attributes":{"component":"Test"},"id":"IndexRoute-parentId_Router-root","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"IndexRoute-parentId_Router-root","children":[]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Route-/users/user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},"IndexRoute-parentId_Router-root":{"type":"IndexRoute","depth":1,"attributes":{"component":"Test"},"id":"IndexRoute-parentId_Router-root","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"IndexRoute-parentId_Router-root","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
 
@@ -100,8 +98,7 @@ export default function({ history }) {
       from: '/a/b',
       to: '/a/c',
     });
-
-    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"Redirect","attributes":{"from":"/a/b","to":"/a/c"},"id":"Redirect-parentId_Router-root","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"Redirect-parentId_Router-root","children":[]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Route-/users/user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},"Redirect-parentId_Router-root":{"type":"Redirect","depth":1,"attributes":{"from":"/a/b","to":"/a/c"},"id":"Redirect-parentId_Router-root","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"Redirect-parentId_Router-root","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
   it('router.createIndexRedirect', () => {
@@ -112,8 +109,7 @@ export default function({ history }) {
       sourcePath: __dirname,
       to: '/a/c',
     });
-
-    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"type":"Router","attributes":{"history":"history"},"id":"Router-root","children":[{"type":"Route","attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},{"type":"Route","attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"type":"Route","attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]}]},{"type":"IndexRedirect","attributes":{"to":"/a/c"},"id":"IndexRedirect-parentId_Router-root","children":[]}],"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"IndexRedirect-parentId_Router-root","children":[]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Route-/users/user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"/users/user","id":"Route-/users/user","children":[]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},"IndexRedirect-parentId_Router-root":{"type":"IndexRedirect","depth":1,"attributes":{"to":"/a/c"},"id":"IndexRedirect-parentId_Router-root","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]},{"id":"Route-/users","children":[{"id":"Route-/users/user","children":[]}]},{"id":"IndexRedirect-parentId_Router-root","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 
   it('router.remove', () => {
@@ -124,37 +120,7 @@ export default function({ history }) {
       sourcePath: __dirname,
       id: 'Route-/users',
     });
-
-    expect(result).toEqual({
-      "dispatches": {},
-      "models": {
-        "data": [],
-        "effectByIds": {},
-        "reducerByIds": {},
-        "subscriptionByIds": {},
-      },
-      "routeComponents": [],
-      "router": {
-        "attributes": {
-          "history": "history"
-        },
-        "children": [
-          {
-            "absolutePath": "/",
-            "attributes": {
-              "component": "IndexPage",
-              "path": "/",
-            },
-            "children": [],
-            "id": "Route-/",
-            "type": "Route",
-          }
-        ],
-        "filePath": "./tmp/router.js",
-        "id": "Router-root",
-        "type": "Router",
-      },
-    });
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[]}]},"routeByIds":{"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}})
   });
 
   it('router.moveTo', () => {
@@ -166,57 +132,6 @@ export default function({ history }) {
       id: 'Route-/users/user',
       parentId: 'Route-/',
     });
-
-    expect(result).toEqual({
-      "dispatches": {},
-      "models": {
-        "data": [],
-        "effectByIds": {},
-        "reducerByIds": {},
-        "subscriptionByIds": {},
-      },
-      "routeComponents": [],
-      "router": {
-        "attributes": {
-          "history": "history",
-        },
-        "children": [
-          {
-            "absolutePath": "/",
-            "attributes": {
-              "component": "IndexPage",
-              "path": "/",
-            },
-            "children": [
-              {
-                "absolutePath": "//user",
-                "attributes": {
-                  "component": "UserDetailPage",
-                  "path": "user",
-                },
-                "children": [],
-                "id": "Route-//user",
-                "type": "Route",
-              },
-            ],
-            "id": "Route-/",
-            "type": "Route",
-          },
-          {
-            "absolutePath": "/users",
-            "attributes": {
-              "component": "UserPage",
-              "path": "/users",
-            },
-            "children": [],
-            "id": "Route-/users",
-            "type": "Route",
-          },
-        ],
-        "filePath": "./tmp/router.js",
-        "id": "Router-root",
-        "type": "Router",
-      },
-    });
+    expect(result).toEqual({"models":{"data":[],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{}},"router":{"tree":{"id":"Router-root","children":[{"id":"Route-/","children":[{"id":"Route-//user","children":[]}]},{"id":"Route-/users","children":[]}]},"routeByIds":{"Route-//user":{"type":"Route","depth":2,"attributes":{"path":"user","component":"UserDetailPage"},"absolutePath":"//user","id":"Route-//user","children":[]},"Route-/":{"type":"Route","depth":1,"attributes":{"path":"/","component":"IndexPage"},"absolutePath":"/","id":"Route-/","children":[{"id":"Route-//user","children":[]}]},"Route-/users":{"type":"Route","depth":1,"attributes":{"path":"/users","component":"UserPage"},"absolutePath":"/users","id":"Route-/users","children":[]},"Router-root":{"type":"Router","depth":0,"attributes":{"history":"history"},"id":"Router-root","children":[{"id":"Route-/","children":[{"id":"Route-//user","children":[]}]},{"id":"Route-/users","children":[]}]}},"filePath":"./tmp/router.js"},"routeComponents":[],"dispatches":{}});
   });
 });
