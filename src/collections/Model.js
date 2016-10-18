@@ -18,10 +18,9 @@ const methods = {
       const props = node.properties.reduce((memo, prop) => {
         if (j.Property.check(prop)) {
           if (prop.key.name === 'namespace') {
-            assert(
-              j.Literal.check(prop.value),
-              `findModels: namespace should be Literal, but got ${prop.value.type}`
-            );
+            if (!j.Literal.check(prop.value)) {
+              return {};
+            }
             memo[prop.key.name] = prop.value.value;
           } else {
             memo[prop.key.name] = true;
