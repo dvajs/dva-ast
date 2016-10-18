@@ -21,7 +21,7 @@ describe('api/project', () => {
       filePath: 'models/app.js'
     });
     expect(result).toEqual(
-      {"models":{"data":[{"reducers":["Reducer^^models/app.js^^showLoading"],"effects":[],"subscriptions":[],"namespace":"app","state":{"loading":false},"id":"Model^^models/app.js^^app","filePath":"models/app.js"}],"reducerByIds":{"Reducer^^models/app.js^^showLoading":{"name":"showLoading","source":"function(state) {\n  return { ...state, loading: true, };\n}","id":"Reducer^^models/app.js^^showLoading","filePath":"models/app.js"}},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"app/showLoading":{"input":[],"output":["Reducer^^models/app.js^^showLoading"]}}}
+      { dispatches: { 'app/showLoading': { input: [], output: [ 'Reducer^^models/app.js^^showLoading' ] } }, models: { data: [ { effects: [], filePath: 'models/app.js', id: 'Model^^models/app.js^^app', namespace: 'app', reducers: [ 'Reducer^^models/app.js^^showLoading' ], state: { loading: false }, subscriptions: [] } ], effectByIds: {}, reducerByIds: { 'Reducer^^models/app.js^^showLoading': { filePath: 'models/app.js', id: 'Reducer^^models/app.js^^showLoading', modelId: 'Model^^models/app.js^^app', name: 'showLoading', source: 'function(state) {\n  return { ...state, loading: true, };\n}' } }, subscriptionByIds: {} }, routeComponents: [], router: null }
     );
   });
 

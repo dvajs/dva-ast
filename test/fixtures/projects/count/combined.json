@@ -35,13 +35,15 @@
         "name": "showLoading",
         "source": "function(state) {\n  return { ...state, loading: true, };\n}",
         "id": "Reducer^^models/app.js^^showLoading",
-        "filePath": "models/app.js"
+        "filePath": "models/app.js",
+        "modelId": "Model^^models/app.js^^app"
       },
       "Reducer^^models/count.js^^add": {
         "name": "add",
         "source": "function(state) {\n  return state + 1;\n}",
         "id": "Reducer^^models/count.js^^add",
-        "filePath": "models/count.js"
+        "filePath": "models/count.js",
+        "modelId": "Model^^models/count.js^^count"
       }
     },
     "effectByIds": {
@@ -52,7 +54,8 @@
           "count/add"
         ],
         "id": "Effect^^models/count.js^^addAsync",
-        "filePath": "models/count.js"
+        "filePath": "models/count.js",
+        "modelId": "Model^^models/count.js^^count"
       }
     },
     "subscriptionByIds": {
@@ -64,7 +67,8 @@
           "count/addAsync"
         ],
         "id": "Subscription^^models/count.js^^setup",
-        "filePath": "models/count.js"
+        "filePath": "models/count.js",
+        "modelId": "Model^^models/count.js^^count"
       }
     }
   },

@@ -77,7 +77,7 @@ describe('api/models', () => {
       source: '1',
     });
     expect(result).toEqual(
-      {"models":{"data":[{"reducers":["Reducer^^./tmp/a.js^^add"],"effects":[],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{"Reducer^^./tmp/a.js^^add":{"name":"add","source":"1","id":"Reducer^^./tmp/a.js^^add","filePath":"./tmp/a.js"}},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"count/add":{"input":[],"output":["Reducer^^./tmp/a.js^^add"]}}}
+      { dispatches: { 'count/add': { input: [], output: [ 'Reducer^^./tmp/a.js^^add' ] } }, models: { data: [ { effects: [], filePath: './tmp/a.js', id: 'Model^^./tmp/a.js^^count', namespace: 'count', reducers: [ 'Reducer^^./tmp/a.js^^add' ], state: 0, subscriptions: [] } ], effectByIds: {}, reducerByIds: { 'Reducer^^./tmp/a.js^^add': { filePath: './tmp/a.js', id: 'Reducer^^./tmp/a.js^^add', modelId: 'Model^^./tmp/a.js^^count', name: 'add', source: '1' } }, subscriptionByIds: {} }, routeComponents: [], router: null }
     );
   });
 
@@ -97,7 +97,7 @@ describe('api/models', () => {
       source: '1',
     });
     expect(result).toEqual(
-      {"models":{"data":[{"reducers":[],"effects":["Effect^^./tmp/a.js^^addRemote"],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{"Effect^^./tmp/a.js^^addRemote":{"name":"addRemote","source":"1","dispatches":[],"id":"Effect^^./tmp/a.js^^addRemote","filePath":"./tmp/a.js"}},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"count/addRemote":{"input":[],"output":["Effect^^./tmp/a.js^^addRemote"]}}}
+      { dispatches: { 'count/addRemote': { input: [], output: [ 'Effect^^./tmp/a.js^^addRemote' ] } }, models: { data: [ { effects: [ 'Effect^^./tmp/a.js^^addRemote' ], filePath: './tmp/a.js', id: 'Model^^./tmp/a.js^^count', namespace: 'count', reducers: [], state: 0, subscriptions: [] } ], effectByIds: { 'Effect^^./tmp/a.js^^addRemote': { dispatches: [], filePath: './tmp/a.js', id: 'Effect^^./tmp/a.js^^addRemote', modelId: 'Model^^./tmp/a.js^^count', name: 'addRemote', source: '1' } }, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [], router: null }
     );
   });
 
@@ -117,7 +117,7 @@ describe('api/models', () => {
       source: '1',
     });
     expect(result).toEqual(
-      {"models":{"data":[{"reducers":[],"effects":[],"subscriptions":["Subscription^^./tmp/a.js^^setup"],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{},"effectByIds":{},"subscriptionByIds":{"Subscription^^./tmp/a.js^^setup":{"name":"setup","source":"1","dispatches":[],"id":"Subscription^^./tmp/a.js^^setup","filePath":"./tmp/a.js"}}},"router":null,"routeComponents":[],"dispatches":{}}
+      { dispatches: {}, models: { data: [ { effects: [], filePath: './tmp/a.js', id: 'Model^^./tmp/a.js^^count', namespace: 'count', reducers: [], state: 0, subscriptions: [ 'Subscription^^./tmp/a.js^^setup' ] } ], effectByIds: {}, reducerByIds: {}, subscriptionByIds: { 'Subscription^^./tmp/a.js^^setup': { dispatches: [], filePath: './tmp/a.js', id: 'Subscription^^./tmp/a.js^^setup', modelId: 'Model^^./tmp/a.js^^count', name: 'setup', source: '1' } } }, routeComponents: [], router: null }
     );
   });
 
@@ -138,7 +138,7 @@ describe('api/models', () => {
       source: '2',
     });
     expect(result).toEqual(
-      {"models":{"data":[{"reducers":["Reducer^^./tmp/a.js^^a"],"effects":[],"subscriptions":[],"namespace":"count","state":0,"id":"Model^^./tmp/a.js^^count","filePath":"./tmp/a.js"}],"reducerByIds":{"Reducer^^./tmp/a.js^^a":{"name":"a","source":"2","id":"Reducer^^./tmp/a.js^^a","filePath":"./tmp/a.js"}},"effectByIds":{},"subscriptionByIds":{}},"router":null,"routeComponents":[],"dispatches":{"count/a":{"input":[],"output":["Reducer^^./tmp/a.js^^a"]}}}
+      { dispatches: { 'count/a': { input: [], output: [ 'Reducer^^./tmp/a.js^^a' ] } }, models: { data: [ { effects: [], filePath: './tmp/a.js', id: 'Model^^./tmp/a.js^^count', namespace: 'count', reducers: [ 'Reducer^^./tmp/a.js^^a' ], state: 0, subscriptions: [] } ], effectByIds: {}, reducerByIds: { 'Reducer^^./tmp/a.js^^a': { filePath: './tmp/a.js', id: 'Reducer^^./tmp/a.js^^a', modelId: 'Model^^./tmp/a.js^^count', name: 'a', source: '2' } }, subscriptionByIds: {} }, routeComponents: [], router: null }
     );
   });
 
