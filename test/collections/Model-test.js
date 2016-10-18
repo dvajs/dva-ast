@@ -17,6 +17,9 @@ describe('collections/Model', () => {
     it('namespace and reducers', () => {
       expect(j(`({namespace:'count',reducers:{}})`).findModels().size()).toEqual(1);
     });
+    it('skip non-literal namespace', () => {
+      expect(j(`({namespace: count,reducers:{}})`).findModels().size()).toEqual(0);
+    });
   });
 
   describe('getModelInfo', () => {
