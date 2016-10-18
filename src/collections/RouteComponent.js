@@ -75,6 +75,7 @@ const methods = {
   findMapFunction() {
     return this.map(path => {
       const mapFnNode = path.value.arguments[0];
+      if (!mapFnNode) return null;
 
       switch (mapFnNode.type) {
         case 'ArrowFunctionExpression':
@@ -108,7 +109,13 @@ const methods = {
       return {
         name: j(path).getFirstComponentName(),
         source: root.toSource(),
-        stateMappings: root.findConnects().findMapFunction().getModulesFromMapFunction(),
+        stateMappings: (() => {
+          const mapFunctions = root.findConnects().findMapFunction();
+          if (mapFunctions) {
+            return mapFunctions.getModulesFromMapFunction();
+          }
+          return [];
+        })(),
         dispatches: j(path).findDispatchCalls().getActionTypeFromCall(),
       };
     });
@@ -174,7 +181,7 @@ const methods = {
         `getActionType: dispatch should be called with 1 argument, but got ${node.arguments.length}`
       );
       const obj = node.arguments[0];
-      
+
       // TODO: Support dispatch(routerRedux.push({''}));
       if (j.CallExpression.check(obj)) {
         console.warn(`[WARN] getActionTypeFromCall: don't support dispatch with CallExpression yet`);
