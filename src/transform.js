@@ -73,7 +73,7 @@ export function normalizeResult(obj, filePath) {
       model.reducers = model.reducers.map(reducer => {
         const id = `Reducer${ID_SEP}${filePath}${ID_SEP}${reducer.name}`;
         addDispatch([`${namespace}/${reducer.name}`], { output: [id] });
-        reducerByIds[id] = { ...reducer, id, filePath };
+        reducerByIds[id] = { ...reducer, id, filePath, modelId: model.id };
         return id;
       });
       model.effects = model.effects.map(effect => {
@@ -84,7 +84,7 @@ export function normalizeResult(obj, filePath) {
           addDispatch([newName], { input: [id] });
           return newName;
         });
-        effectByIds[id] = { ...effect, id, filePath, dispatches };
+        effectByIds[id] = { ...effect, id, filePath, dispatches, modelId: model.id };
         return id;
       });
       model.subscriptions = model.subscriptions.map(subscription => {
@@ -94,7 +94,7 @@ export function normalizeResult(obj, filePath) {
           addDispatch([newName], { input: [id] });
           return newName;
         });
-        subscriptionByIds[id] = { ...subscription, id, filePath, dispatches };
+        subscriptionByIds[id] = { ...subscription, id, filePath, dispatches, modelId: model.id };
         return id;
       });
     }
