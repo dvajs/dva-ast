@@ -6,6 +6,11 @@ import * as utils from '../utils/index';
 
 Helper.register();
 
+const _check = (node, name) => {
+  return (node.type === 'Identifier' && node.name === name) ||
+    (node.type === 'Literal' && node.value === name);
+}
+
 const methods = {
 
   findModels(namespace) {
@@ -148,7 +153,7 @@ const methods = {
 
       let updated = false;
       items.value.properties.forEach(prop => {
-        if (j.Property.check(prop) && prop.key.name === name) {
+        if (j.Property.check(prop) && _check(prop.key, name)) {
           updated = true;
           prop.value = utils.getExpression(source);
         }
@@ -194,7 +199,7 @@ const methods = {
 
       let removed = false;
       items.value.properties = items.value.properties.filter(prop => {
-        if (j.Property.check(prop) && prop.key.name === name) {
+        if (j.Property.check(prop) && _check(prop.key, name)) {
           removed = true;
           return false;
         }
@@ -284,4 +289,3 @@ function register(jscodeshift = j) {
 export default {
   register: once(register),
 };
-
