@@ -122,4 +122,13 @@ describe('collections/Model', () => {
     });
   });
 
+  describe('removeReducer with key type: Literal', () => {
+    it('normal', () => {
+      const root = j(`({reducers:{"a":1,b:2}})`);
+      root.find(j.ObjectExpression).at(0).removeReducer('a');
+      expect(root.toSource()).toEqual(`({reducers:{
+  b:2
+}})`);
+    });
+  });
 });
