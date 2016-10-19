@@ -1,6 +1,6 @@
 {
   "name": "dva-ast",
-  "version": "0.3.0-beta-2",
+  "version": "0.3.0-beta-3",
   "description": "dva static analysis based on javascript ast.",
   "files": [
     "lib",
