@@ -15,7 +15,6 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
-    "dva-jscodeshift": "^0.1.0",
     "fs-extra": "^0.30.0",
     "glob": "^7.1.0",
     "handlebars": "^4.0.5",
