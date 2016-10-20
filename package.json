@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "build": "babel -d lib/ src/",
+    "dev": "npm run build -- -w",    
     "test": "NODE_ENV=test nyc mocha --no-timeouts ./test/*-test.js ./test/**/*-test.js",
     "debug": "mocha --require babel-register --no-timeouts ./test/*-test.js ./test/**/*-test.js",
     "report": "nyc report --reporter=html",
