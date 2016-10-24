@@ -1,6 +1,8 @@
-const transform = require('./lib/transform');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-module.exports = transform;
-module.exports.combine = require('./lib/combine');
-module.exports.transform = transform;
-module.exports.api = require('./lib/api/index');
+exports.default = require('./lib/transform');
+exports.combine = require('./lib/combine');
+exports.transform = require('./lib/transform');
+exports.api = require('./lib/api/index');

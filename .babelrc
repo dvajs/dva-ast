@@ -1,3 +1,6 @@
 {
-  "presets": ["node"]
+  "presets": ["node"],
+  "plugins": [
+    "add-module-exports"
+  ]
 }
