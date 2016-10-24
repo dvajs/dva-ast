@@ -4,6 +4,7 @@ import {
   readFile,
   removeFile,
 } from './utils';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import assert from 'assert';
 import j from 'jscodeshift';
@@ -13,6 +14,7 @@ export function create(payload) {
   const template = getTemplate('models.create');
   const source = template(payload);
   const filePath = join(payload.sourcePath, payload.filePath);
+  assert(!existsSync(filePath), 'api/models/create: file exists');
   writeFile(filePath, source);
 }
 
