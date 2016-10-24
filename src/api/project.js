@@ -8,7 +8,7 @@ export function loadAll({ sourcePath }) {
   const files = globSync('**/*.js?(x)', {
     cwd: sourcePath,
     dot: false,
-    ignore: ['node_modules/*']
+    ignore: ['node_modules/**']
   });
 
   return files.reduce((memo, path) => {
