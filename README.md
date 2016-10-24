@@ -34,15 +34,15 @@ All apis of models contains `sourcePath` and ``filePath`.
 - `remove({ namespace })`
 - `updateNamespace({ namespace, newNamespace })`
 - `updateState({ namespace, source })`
-- `addReducer({ namespace, [source] })`
-- `updateReducer({ namespace, source })`
-- `removeReducer({ namespace })`
-- `addEffect({ namespace, [source] })`
-- `updateEffect({ namespace, source })`
-- `removeEffect({ namespace })`
-- `addSubscription({ namespace, [source] })`
-- `updateSubscription({ namespace, source })`
-- `removeSubscription({ namespace })`
+- `addReducer({ namespace, name, [source] })`
+- `updateReducer({ namespace, name, source })`
+- `removeReducer({ namespace, name })`
+- `addEffect({ namespace, name, [source] })`
+- `updateEffect({ namespace, name, source })`
+- `removeEffect({ namespace, name })`
+- `addSubscription({ namespace, name, [source] })`
+- `updateSubscription({ namespace, name, source })`
+- `removeSubscription({ namespace, name })`
 
 #### routeComponents
 
