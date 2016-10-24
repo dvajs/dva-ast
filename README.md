@@ -28,7 +28,7 @@ $ npm run debug
 
 #### models
 
-All apis of models contains `sourcePath` and ``filePath`.
+All apis of models contains `sourcePath` and `filePath`.
 
 - `create({ namespace })`
 - `remove({ namespace })`
