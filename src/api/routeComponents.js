@@ -25,7 +25,6 @@ export function create(payload) {
       cssFilePath = filePath.slice(0, filePath.lastIndexOf(en));
     }
     cssFilePath = cssFilePath + '.css';
-    console.log(cssFilePath);
     writeFile(cssFilePath, `\r\n.normal {\r\n}\r\n`);
   }
 }
