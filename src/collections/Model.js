@@ -9,7 +9,7 @@ Helper.register();
 const _check = (node, name) => {
   return (node.type === 'Identifier' && node.name === name) ||
     (node.type === 'Literal' && node.value === name);
-}
+};
 
 const methods = {
 
