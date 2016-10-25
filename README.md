@@ -46,7 +46,7 @@ All apis of models contains `sourcePath` and `filePath`.
 
 #### routeComponents
 
-All apis of routeComponents contains `sourcePath` and ``filePath`.
+All apis of routeComponents contains `sourcePath` and `filePath`.
 
 - `create({ componentName })`
 - `remove()`
