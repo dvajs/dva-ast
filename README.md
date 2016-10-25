@@ -30,7 +30,7 @@ $ npm run debug
 
 All apis of models contains `sourcePath` and `filePath`.
 
-- `create({ namespace })`
+- `create({ namespace, entry?, modelPath? })`
 - `remove({ namespace })`
 - `updateNamespace({ namespace, newNamespace })`
 - `updateState({ namespace, source })`
@@ -69,6 +69,10 @@ All apis of routeComponents contains `sourcePath` and `filePath`.
 - `createIndexRedirect({ to, [parentId] })`
 - `remove({ id })`
 - `moveTo({ id, parentId })`
+
+#### entry
+
+- `addModel({ entry, modelPath })`
 
 ## LICENSE
 
