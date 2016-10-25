@@ -6,7 +6,8 @@ import {
 } from './utils';
 import { existsSync } from 'fs';
 import { getExpression } from '../utils/index';
-import { join, relative, sep } from 'path';
+import { join, sep } from 'path';
+import relative from 'relative';
 import assert from 'assert';
 import j from 'jscodeshift';
 
@@ -137,6 +138,9 @@ function __createRoute(payload, type) {
   const componentFilePath = join(payload.sourcePath, component.filePath);
   if (existsSync(componentFilePath)) {
     relativePath = relative(filePath, componentFilePath);
+    if (relativePath.charAt(0) !== '.') {
+      relativePath = './' + relativePath;
+    }
     relativePath = relativePath.split(sep).join('/');  // workaround for windows
   }
 

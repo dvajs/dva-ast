@@ -23,7 +23,8 @@
     "jscodeshift": "^0.3.28",
     "lodash.flatten": "^4.4.0",
     "lodash.once": "^4.1.1",
-    "lodash.uniq": "^4.5.0"
+    "lodash.uniq": "^4.5.0",
+    "relative": "^3.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",

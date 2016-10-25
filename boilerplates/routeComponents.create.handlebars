@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'dva';
 
-export default class {{componentName}} extends Component {
-  render() {
-    return (
-      <div>Component: '{{componentName}}'</div>
-    );
-  }
+function {{componentName}}(props) {
+  return (
+    <div>Component: '{{componentName}}'</div>
+  );
 }
+
+function mapStateToProps(state) {
+  return {};
+}
+
+export default connect(mapStateToProps)({{componentName}});
