@@ -8,6 +8,7 @@ import * as models from './models';
 import * as routeComponents from './routeComponents';
 import * as router from './router';
 import * as project from './project';
+import * as entry from './entry';
 
 const TYPE_SEP = '.';
 const apiMap = {
@@ -15,6 +16,7 @@ const apiMap = {
   routeComponents,
   router,
   project,
+  entry,
 };
 
 export default function(type, payload) {

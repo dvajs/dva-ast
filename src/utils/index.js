@@ -1,8 +1,9 @@
 import j from 'jscodeshift';
 import assert from 'assert';
 
-export function getExpression(source) {
-  const program = j(`(${source})`).find(j.Program).get();
+export function getExpression(source, opts = {}) {
+  const { noParenthesis } = opts;
+  const program = j(noParenthesis ? source : `(${source})`).find(j.Program).get();
   const node = program.node.body[0];
   return node.expression;
 }
