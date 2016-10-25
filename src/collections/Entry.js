@@ -75,7 +75,7 @@ const methods = {
       collection,
       j.expressionStatement(
         j.callExpression(
-          j.memberExpression(object, property),
+          j.memberExpression(object, j.identifier('model')),
           [
             j.callExpression(j.identifier('require'), [
               j.literal(modelPath)
