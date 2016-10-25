@@ -8,6 +8,10 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import assert from 'assert';
 import j from 'jscodeshift';
+import { addModel } from './entry';
+import Model from '../collections/Model';
+
+Model.register();
 
 export function create(payload) {
   assert(payload.namespace, 'api/models/create: payload should have namespace');
@@ -16,6 +20,15 @@ export function create(payload) {
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/models/create: file exists');
   writeFile(filePath, source);
+
+  // Add model to entry
+  if (payload.entry && payload.modelPath) {
+    addModel({
+      sourcePath: payload.sourcePath,
+      filePath: payload.entry,
+      modelPath: payload.modelPath,
+    });
+  }
 }
 
 export function remove(payload) {

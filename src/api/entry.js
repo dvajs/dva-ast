@@ -7,6 +7,9 @@ import {
 import { join } from 'path';
 import assert from 'assert';
 import j from 'jscodeshift';
+import Entry from '../collections/Entry';
+
+Entry.register();
 
 export function addModel(payload) {
   assert(payload.modelPath, 'api/entry/addModel: payload should have modelPath');
