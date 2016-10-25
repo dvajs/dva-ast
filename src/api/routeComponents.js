@@ -6,7 +6,7 @@ import {
 } from './utils';
 import { getExpression } from '../utils/index';
 import { existsSync } from 'fs';
-import { join } from 'path';
+import { join, extname } from 'path';
 import assert from 'assert';
 import j from 'jscodeshift';
 
@@ -17,6 +17,17 @@ export function create(payload) {
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/routeComponents/create: file exists');
   writeFile(filePath, source);
+
+  if (payload.css) {
+    let cssFilePath = filePath;
+    const en = extname(filePath);
+    if (en) {
+      cssFilePath = filePath.slice(0, filePath.lastIndexOf(en));
+    }
+    cssFilePath = cssFilePath + '.css';
+    console.log(cssFilePath);
+    writeFile(cssFilePath, `\r\n.normal {\r\n}\r\n`);
+  }
 }
 
 export function remove(payload) {

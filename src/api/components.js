@@ -5,7 +5,7 @@ import {
   removeFile,
 } from './utils';
 import assert from 'assert';
-import { join } from 'path';
+import { extname, join } from 'path';
 import { existsSync } from 'fs';
 
 export function create(payload) {
@@ -15,4 +15,15 @@ export function create(payload) {
   const filePath = join(payload.sourcePath, payload.filePath);
   assert(!existsSync(filePath), 'api/components/create: file exists');
   writeFile(filePath, source);
+
+  if (payload.css) {
+    let cssFilePath = filePath;
+    const en = extname(filePath);
+    if (en) {
+      cssFilePath = filePath.slice(0, filePath.lastIndexOf(en));
+    }
+    cssFilePath = cssFilePath + '.css';
+    console.log(cssFilePath);
+    writeFile(cssFilePath, `\r\n.normal {\r\n}\r\n`);
+  }
 }

@@ -1,9 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
+{{#if css}}import styles from './{{componentName}}.css';
+{{/if}}
 
 function {{componentName}}(props) {
   return (
-    <div>Route Component: '{{componentName}}'</div>
+    {{#if css}}<div className={styles.normal}>{{else}}<div>{{/if}}
+      Route Component: '{{componentName}}'
+    </div>
   );
 }
 

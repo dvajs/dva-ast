@@ -1,8 +1,12 @@
 import React from 'react';
+{{#if css}}import styles from './{{componentName}}.css';
+{{/if}}
 
 function {{componentName}}(props) {
   return (
-    <div>Component: '{{componentName}}'</div>
+    {{#if css}}<div className={styles.normal}>{{else}}<div>{{/if}}
+      Component: '{{componentName}}'
+    </div>
   );
 }
 
