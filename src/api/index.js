@@ -9,6 +9,7 @@ import * as routeComponents from './routeComponents';
 import * as router from './router';
 import * as project from './project';
 import * as entry from './entry';
+import * as components from './components';
 
 const TYPE_SEP = '.';
 const apiMap = {
@@ -17,6 +18,7 @@ const apiMap = {
   router,
   project,
   entry,
+  components,
 };
 
 export default function(type, payload) {
