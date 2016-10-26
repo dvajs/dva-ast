@@ -82,10 +82,10 @@ const methods = {
     function getAttributeValue(node) {
       if (node.type === 'Literal') {
         return node.value;
-      } else if (node.type === 'JSXExpressionContainer' &&
-        node.expression.type === 'Identifier') {
-        // TODO: Identifier 时应该如何展现? Router 应该处理和 Component 之间的关系
+      } else if (node.expression.type === 'Identifier') {
         return node.expression.name;
+      } else if (node.type === 'JSXExpressionContainer') {
+        return j(node.expression).toSource();
       }
       throw new Error(`getRouterTree: unsupported attribute type`);
     }
