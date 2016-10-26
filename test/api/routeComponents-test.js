@@ -32,7 +32,7 @@ describe('api/routeComponents', () => {
             "filePath": "./tmp/IndexPage.jsx",
             "id": "RouteComponent^^./tmp/IndexPage.jsx^^IndexPage",
             "name": "IndexPage",
-            "source": "import React, { Component } from 'react';\n\nexport default class IndexPage extends Component {\n  render() {\n    return (\n      <div>Component: 'IndexPage'</div>\n    );\n  }\n}\n",
+            "source": "import React from 'react';\nimport { connect } from 'dva';\n\nfunction IndexPage(props) {\n  return (\n    <div>\n      Route Component: 'IndexPage'\n    </div>\n  );\n}\n\nfunction mapStateToProps(state) {\n  return {};\n}\n\nexport default connect(mapStateToProps)(IndexPage);\n",
             "stateMappings": []
           }
         ],
@@ -97,7 +97,7 @@ describe('api/routeComponents', () => {
       actionType: 'app/initilize'
     });
 
-    expect(result).toEqual({ dispatches: { 'app/initilize': { input: [ 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage' ], output: [] } }, models: { data: [], effectByIds: {}, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [ { dispatches: [ 'app/initilize' ], filePath: './tmp/IndexPage.jsx', id: 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage', name: 'IndexPage', source: 'import React, { Component } from \'react\';\n\nexport default class IndexPage extends Component {\n  ["app/initilize"]() {\n    this.props.dispatch({ type: \'app/initilize\', payload: {} });\n  }\n\n  render() {\n    return (\n      <div><button onClick={() => { this["app/initilize"](); }}>click to dispatch app/initilize</button>Component: \'IndexPage\'</div>\n    );\n  }\n}\n', stateMappings: [] } ], router: null });
+    expect(result).toEqual({ dispatches: { 'app/initilize': { input: [ 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage' ], output: [] } }, models: { data: [], effectByIds: {}, reducerByIds: {}, subscriptionByIds: {} }, routeComponents: [ { dispatches: [ 'app/initilize' ], filePath: './tmp/IndexPage.jsx', id: 'RouteComponent^^./tmp/IndexPage.jsx^^IndexPage', name: 'IndexPage', source: "import React from 'react';\nimport { connect } from 'dva';\n\nfunction IndexPage(props) {\n  return (\n    <div><button onClick={() => { props.dispatch({ type: 'app/initilize', payload: {} }); }}>click to dispatch app/initilize</button>Route Component: 'IndexPage'</div>\n  );\n}\n\nfunction mapStateToProps(state) {\n  return {};\n}\n\nexport default connect(mapStateToProps)(IndexPage);\n", stateMappings: [] } ], router: null });
   });
 
   it('routeComponents.addDispatch for Pure Function', () => {
