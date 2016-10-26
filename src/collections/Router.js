@@ -65,6 +65,11 @@ const methods = {
         ret.id = `${ret.type}-root`;
       }
 
+      // 有些特殊情况 id 会重复（同样的父子路由，出现在多处，可能父亲的父亲不一样）
+      if (routeByIds[ret.id]) {
+        ret.id = `${ret.id}_${Math.random()}`;
+      }
+
       if (node.children) {
         ret.children = node.children
           .filter(node => node.type === 'JSXElement')
@@ -82,10 +87,10 @@ const methods = {
     function getAttributeValue(node) {
       if (node.type === 'Literal') {
         return node.value;
-      } else if (node.type === 'JSXExpressionContainer' &&
-        node.expression.type === 'Identifier') {
-        // TODO: Identifier 时应该如何展现? Router 应该处理和 Component 之间的关系
+      } else if (node.expression.type === 'Identifier') {
         return node.expression.name;
+      } else if (node.type === 'JSXExpressionContainer') {
+        return j(node.expression).toSource();
       }
       throw new Error(`getRouterTree: unsupported attribute type`);
     }
