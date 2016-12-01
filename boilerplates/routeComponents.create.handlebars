@@ -3,15 +3,15 @@ import { connect } from 'dva';
 {{#if css}}import styles from './{{componentName}}.css';
 {{/if}}
 
-function {{componentName}}(props) {
+function {{componentName}}() {
   return (
     {{#if css}}<div className={styles.normal}>{{else}}<div>{{/if}}
-      Route Component: '{{componentName}}'
+      Route Component: {{componentName}}
     </div>
   );
 }
 
-function mapStateToProps(state) {
+function mapStateToProps() {
   return {};
 }
 

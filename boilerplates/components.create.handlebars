@@ -2,10 +2,10 @@ import React from 'react';
 {{#if css}}import styles from './{{componentName}}.css';
 {{/if}}
 
-function {{componentName}}(props) {
+function {{componentName}}() {
   return (
     {{#if css}}<div className={styles.normal}>{{else}}<div>{{/if}}
-      Component: '{{componentName}}'
+      Component: {{componentName}}
     </div>
   );
 }
