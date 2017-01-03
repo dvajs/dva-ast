@@ -143,10 +143,9 @@ const methods = {
     const result = this.simpleMap(path => {
       const node = path.value;
       const params = node.params;
-      assert(
-        params && params.length,
-        'getModulesFromMapFunction: should have params'
-      );
+      if (!params || params.length === 0) {
+        return [];
+      }
 
       switch (params[0].type) {
         case 'Identifier':
