@@ -1,6 +1,6 @@
 {
   "name": "dva-ast",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "dva static analysis based on javascript ast.",
   "files": [
     "boilerplates",
@@ -14,7 +14,8 @@
     "test": "NODE_ENV=test nyc mocha --no-timeouts ./test/*-test.js ./test/**/*-test.js",
     "debug": "mocha --require babel-register --no-timeouts ./test/*-test.js ./test/**/*-test.js",
     "report": "nyc report --reporter=html",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "fs-extra": "^0.30.0",
