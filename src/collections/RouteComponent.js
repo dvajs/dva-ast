@@ -35,12 +35,16 @@ const methods = {
       }
     });
 
-    // 支持 pure function
     this.find(j.FunctionDeclaration).forEach(path => {
       if (hasJSXElement(path)) pathes.push(path);
     });
 
-    this.find(j.ArrowFunctionExpression).forEach(path => {
+    // 支持 pure function
+    this.find(j.VariableDeclarator, {
+      init: {
+        type: 'ArrowFunctionExpression',
+      }
+    }).forEach(path => {
       if (hasJSXElement(path)) pathes.push(path);
     });
 
