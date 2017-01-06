@@ -40,6 +40,10 @@ const methods = {
       if (hasJSXElement(path)) pathes.push(path);
     });
 
+    this.find(j.ArrowFunctionExpression).forEach(path => {
+      if (hasJSXElement(path)) pathes.push(path);
+    });
+
     function isReactComponent(node) {
       return node.property.name === 'Component' &&
           node.object.name === 'React';
