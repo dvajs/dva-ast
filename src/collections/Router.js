@@ -1,5 +1,5 @@
 import j from 'jscodeshift';
-import Collection from 'jscodeshift/dist/Collection';
+import Collection from 'jscodeshift/src/Collection';
 import once from 'lodash.once';
 import assert from 'assert';
 import Helper from './Helper';

@@ -1,6 +1,6 @@
 import j from 'jscodeshift';
 import once from 'lodash.once';
-import Collection from 'jscodeshift/dist/Collection';
+import Collection from 'jscodeshift/src/Collection';
 
 function getImportRequirePath(identifierName, path) {
   const scope = path.scope.lookup(identifierName);
